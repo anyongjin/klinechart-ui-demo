@@ -4,10 +4,12 @@
 
 <script setup lang="ts">
 import KLineCharPro from "~/components/kline/chart_pro.vue"
-import BanDatafeed from "~/composables/kline/ban_datafeed"
+import DefaultDatafeed from "~/composables/kline/DefaultDatafeed"
 import {ref} from "vue"
 
-const datafeed = ref(new BanDatafeed())
+const apiKey = '[APIKey]'
+
+const datafeed = ref(new DefaultDatafeed(apiKey))
 
 </script>
 

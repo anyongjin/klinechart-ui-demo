@@ -6,6 +6,13 @@
 由于交易界面UI要求的定制性一般比较高，将此项目打包为package不太适合自由修改。  
 所以建议直接clone本项目，提取需要的部分，自由修改页面组件和UI  
 
+# 后端数据来源
+**使用默认数据(DefaultDatafeed)**  
+默认数据来源于 https://polygon.io/ ，在使用前需要去申请API key。申请完成后，通过内置DefaultDatafeed这个类完成数据接入。   
+**使用自定义数据(MyDatafeed)**  
+后端服务运行在`http://127.0.0.1:8000`，接口数据规约可参考MyDatafeed
+
+
 # 其他注意
  **多语言i18n**  
 不要使用nuxt官方的i18n模块，使用[这个](https://vue-i18n.intlify.dev/guide/integrations/nuxt3.html)  
