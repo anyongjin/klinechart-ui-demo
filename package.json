@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.11.0",
+    "@types/node": "^18",
+    "nuxt": "^3.5.2",
+    "nuxt-lodash": "^2.4.1",
+    "sass": "^1.62.1",
+    "vue-i18n": "^9.2.2"
+  },
+  "dependencies": {
+    "klinecharts": "^9.4.0"
+  }
+}
