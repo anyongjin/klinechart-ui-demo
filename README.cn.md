@@ -8,7 +8,7 @@
 
 # 后端数据来源
 **使用CoinGecko数据(CoingeckoDatafeed)**  
-来源于 https://www.coingecko.com/zh/api/documentation， 免费版无需申请API Key，但数据很有限。
+来源于 https://www.coingecko.com/zh/api/documentation， 免费版无需申请API Key，但数据很有限。  
 **使用Polygon数据(PolygonDatafeed)**  
 来源于 https://polygon.io/ ，在使用前需要去申请API key。  
 **使用自定义数据(MyDatafeed)**  
