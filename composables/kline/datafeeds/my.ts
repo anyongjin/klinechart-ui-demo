@@ -3,6 +3,26 @@ import {Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback} from "~/compone
 import {$fetch} from "ofetch";
 
 export default class MyDatafeed implements Datafeed{
+  
+  getDefaultSymbol(): SymbolInfo {
+    return {ticker: 'BTC/USDT', exchange: 'binance'}
+  }
+
+  canSymbolSearch(): boolean {
+    return true
+  }
+
+  getAllPeriods(): Period[] {
+    return [
+      { multiplier: 1, timespan: 'minute', text: '1m', timeframe: '1m' },
+      { multiplier: 5, timespan: 'minute', text: '5m', timeframe: '5m' },
+      { multiplier: 15, timespan: 'minute', text: '15m', timeframe: '15m' },
+      { multiplier: 1, timespan: 'hour', text: '1H', timeframe: '1h' },
+      { multiplier: 2, timespan: 'hour', text: '2H', timeframe: '2h' },
+      { multiplier: 4, timespan: 'hour', text: '4H', timeframe: '4h' },
+      { multiplier: 1, timespan: 'day', text: 'D', timeframe: '1d' },
+    ]
+  }
 
   async getHistoryKLineData(symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]> {
     const query = {symbol: symbol.ticker, timeframe: period.timeframe, exchange: symbol.exchange, from, to}

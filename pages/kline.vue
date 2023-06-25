@@ -1,15 +1,19 @@
 <template>
-  <KLineCharPro ref="chart" :datafeed="datafeed"/>
+  <KLineCharPro ref="chart" :datafeed="datafeed" :watermark="watermark" :symbol="symbol" :periods="periods"/>
 </template>
 
 <script setup lang="ts">
 import KLineCharPro from "~/components/kline/chart_pro.vue"
-import DefaultDatafeed from "~/composables/kline/DefaultDatafeed"
-import {ref} from "vue"
+import {CoingeckoDatafeed} from "~/composables/kline/datafeeds"
+import {reactive, ref} from "vue"
 
-const apiKey = '[APIKey]'
+const watermark = ref('<img width="504" src="/logo.png"/>')
 
-const datafeed = ref(new DefaultDatafeed(apiKey))
+const datafeed = ref(new CoingeckoDatafeed())
+
+const symbol = reactive(datafeed.value.getDefaultSymbol())
+const periods = reactive(datafeed.value.getAllPeriods())
+
 
 </script>
 

@@ -52,7 +52,8 @@ type Props = {
   periods?: Period[],
   panes?: PaneInds[],
   styles?: Styles,
-  datafeed: Datafeed
+  datafeed: Datafeed,
+  watermark?: string | Node
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -173,6 +174,18 @@ onMounted(() => {
     }
   })
   if (chart) {
+    const watermarkContainer = chart.value?.getDom('candle_pane', DomPosition.Main)
+    if (watermarkContainer) {
+      let watermark = document.createElement('div')
+      watermark.className = 'klinecharts-pro-watermark'
+      if (utils.isString(props.watermark)) {
+        const str = (props.watermark as string).replace(/(^\s*)|(\s*$)/g, '')
+        watermark.innerHTML = str
+      } else {
+        watermark.appendChild(props.watermark as Node)
+      }
+      watermarkContainer.appendChild(watermark)
+    }
     const priceUnitContainer = chart.value?.getDom('candle_pane', DomPosition.YAxis)
     priceUnitDom = document.createElement('span')
     priceUnitDom.className = 'klinecharts-pro-price-unit'

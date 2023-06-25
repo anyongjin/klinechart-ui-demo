@@ -7,8 +7,10 @@
 所以建议直接clone本项目，提取需要的部分，自由修改页面组件和UI  
 
 # 后端数据来源
-**使用默认数据(DefaultDatafeed)**  
-默认数据来源于 https://polygon.io/ ，在使用前需要去申请API key。申请完成后，通过内置DefaultDatafeed这个类完成数据接入。   
+**使用CoinGecko数据(CoingeckoDatafeed)**  
+来源于 https://www.coingecko.com/zh/api/documentation， 免费版无需申请API Key，但数据很有限。
+**使用Polygon数据(PolygonDatafeed)**  
+来源于 https://polygon.io/ ，在使用前需要去申请API key。  
 **使用自定义数据(MyDatafeed)**  
 后端服务运行在`http://127.0.0.1:8000`，接口数据规约可参考MyDatafeed
 

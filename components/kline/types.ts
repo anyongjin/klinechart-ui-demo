@@ -29,6 +29,9 @@ export type PaneInds = {
 export type DatafeedSubscribeCallback = (data: KLineData) => void
 
 export interface Datafeed {
+  getDefaultSymbol(): SymbolInfo
+  canSymbolSearch(): boolean
+  getAllPeriods(): Period[]
   searchSymbols (search?: string): Promise<SymbolInfo[]>
   getHistoryKLineData (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
   subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void

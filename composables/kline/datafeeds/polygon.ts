@@ -17,7 +17,7 @@ import { KLineData } from 'klinecharts'
 import { Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback } from "~/components/kline/types";
 
 
-export default class DefaultDatafeed implements Datafeed {
+export default class PolygonDatafeed implements Datafeed {
   constructor (apiKey: string) {
     this._apiKey = apiKey
   }
@@ -27,6 +27,29 @@ export default class DefaultDatafeed implements Datafeed {
   private _prevSymbolMarket?: string
 
   private _ws?: WebSocket
+  
+  getDefaultSymbol(): SymbolInfo {
+    return {ticker: 'AAPL'}
+  }
+
+  canSymbolSearch(): boolean {
+    return true
+  }
+
+  getAllPeriods(): Period[] {
+    return [
+      { multiplier: 1, timespan: 'minute', text: '1m', timeframe: '1m' },
+      { multiplier: 5, timespan: 'minute', text: '5m', timeframe: '5m' },
+      { multiplier: 15, timespan: 'minute', text: '15m', timeframe: '15m' },
+      { multiplier: 1, timespan: 'hour', text: '1H', timeframe: '1h' },
+      { multiplier: 2, timespan: 'hour', text: '2H', timeframe: '2h' },
+      { multiplier: 4, timespan: 'hour', text: '4H', timeframe: '4h' },
+      { multiplier: 1, timespan: 'day', text: 'D', timeframe: '1d' },
+      { multiplier: 1, timespan: 'week', text: 'W', timeframe: '1w' },
+      { multiplier: 1, timespan: 'month', text: 'M', timeframe: '1M' },
+      { multiplier: 1, timespan: 'year', text: 'Y', timeframe: '1y' }
+    ]
+  }
 
   async searchSymbols (search?: string): Promise<SymbolInfo[]> {
     const response = await fetch(`https://api.polygon.io/v3/reference/tickers?apiKey=${this._apiKey}&active=true&search=${search ?? ''}`)
