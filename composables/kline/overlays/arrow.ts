@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 
-import { OverlayTemplate, utils } from 'klinecharts'
+import { OverlayTemplate } from 'klinecharts'
+import kc from "klinecharts"
 
 import { getRotateCoordinate } from './utils'
 
@@ -25,7 +26,7 @@ const arrow: OverlayTemplate = {
   createPointFigures: ({ coordinates }) => {
     if (coordinates.length > 1) {
       const flag = coordinates[1].x > coordinates[0].x ? 0 : 1
-      const kb = utils.getLinearSlopeIntercept(coordinates[0], coordinates[1])
+      const kb = kc.utils.getLinearSlopeIntercept(coordinates[0], coordinates[1])
       let offsetAngle
       if (kb) {
         offsetAngle = Math.atan(kb[0]) + Math.PI * flag

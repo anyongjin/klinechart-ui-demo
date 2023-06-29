@@ -29,3 +29,8 @@ yarn install
 ```bash
 yarn dev
 ```
+
+### 部署到生产环境
+```bash
+yarn build && node .output/server/index.mjs
+```

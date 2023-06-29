@@ -5,8 +5,8 @@
       <template v-for="(item, index) in options" :key="item.key">
         <span>{{item.text}}</span>
         <Select v-if="item.component == 'select'" :data-source="item.dataSource" css-vars="width: 120px"
-                :value="$t(utils.formatValue(styles, item.key))" @change="update(item.key, $event.key)"/>
-        <Switch v-else-if="item.component == 'switch'" :open="!!utils.formatValue(styles, item.key)"
+                :value="$t(kc.utils.formatValue(styles, item.key))" @change="update(item.key, $event.key)"/>
+        <Switch v-else-if="item.component == 'switch'" :open="!!kc.utils.formatValue(styles, item.key)"
                 @change="update(item.key, $event)"/>
       </template>
     </div>
@@ -21,7 +21,8 @@ import Switch from "~/components/kline/switch.vue"
 import {computed, defineEmits, defineProps, reactive} from "vue";
 import {useNuxtApp} from "#app";
 const {t} = useNuxtApp()
-import {Chart, Styles, utils} from "klinecharts";
+import {Chart, Styles} from "klinecharts";
+import kc from "klinecharts"
 import _ from "lodash"
 const props = defineProps<{
   currentStyles: Styles,

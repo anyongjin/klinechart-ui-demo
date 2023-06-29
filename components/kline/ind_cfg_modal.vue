@@ -13,7 +13,8 @@
 <script setup lang="ts">
 import Modal from "~/components/kline/modal.vue"
 import Input from "~/components/kline/input.vue"
-import { utils, Chart, Indicator } from 'klinecharts'
+import { Chart, Indicator } from 'klinecharts'
+import kc from "klinecharts"
 import IndFields from "~/components/kline/inds"
 import {defineEmits, reactive, computed} from "vue";
 
@@ -48,7 +49,7 @@ function clickModel(from: string){
   if(from !== 'confirm')return;
   const result: any[] = []
   params.forEach((param: any, i: number) => {
-    if (!utils.isValid(param) || param === '') {
+    if (!kc.utils.isValid(param) || param === '') {
       if (fields[i].default) {
         param = fields[i].default
       }

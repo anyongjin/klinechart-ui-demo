@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 
-import { Coordinate, Bounding, LineAttrs, utils } from 'klinecharts'
+import { Coordinate, Bounding, LineAttrs } from 'klinecharts'
+import kc from "klinecharts"
 
 export function getRotateCoordinate (coordinate: Coordinate, targetCoordinate: Coordinate, angle: number): Coordinate {
   const x = (coordinate.x - targetCoordinate.x) * Math.cos(angle) - (coordinate.y - targetCoordinate.y) * Math.sin(angle) + targetCoordinate.x
@@ -38,12 +39,12 @@ export function getRayLine (coordinates: Coordinate[], bounding: Bounding): Line
     } else if (coordinates[0].x > coordinates[1].x) {
       coordinate = {
         x: 0,
-        y: utils.getLinearYFromCoordinates(coordinates[0], coordinates[1], { x: 0, y: coordinates[0].y })
+        y: kc.utils.getLinearYFromCoordinates(coordinates[0], coordinates[1], { x: 0, y: coordinates[0].y })
       }
     } else {
       coordinate = {
         x: bounding.width,
-        y: utils.getLinearYFromCoordinates(coordinates[0], coordinates[1], { x: bounding.width, y: coordinates[0].y })
+        y: kc.utils.getLinearYFromCoordinates(coordinates[0], coordinates[1], { x: bounding.width, y: coordinates[0].y })
       }
     }
     return { coordinates: [coordinates[0], coordinate] }

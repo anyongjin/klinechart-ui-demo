@@ -32,3 +32,8 @@ yarn install
 ```bash
 yarn dev
 ```
+
+### Deploy in Production Mode
+```bash
+yarn build && node .output/server/index.mjs
+```

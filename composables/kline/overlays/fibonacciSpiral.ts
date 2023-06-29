@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 
-import { OverlayTemplate, utils, registerFigure } from 'klinecharts'
+import { OverlayTemplate, registerFigure } from 'klinecharts'
+import kc from "klinecharts"
 
 import { getDistance, getRotateCoordinate, getRayLine } from './utils'
 
@@ -26,7 +27,7 @@ const fibonacciSpiral: OverlayTemplate = {
     if (coordinates.length > 1) {
       const startRadius = getDistance(coordinates[0], coordinates[1]) / Math.sqrt(24)
       const flag = coordinates[1].x > coordinates[0].x ? 0 : 1
-      const kb = utils.getLinearSlopeIntercept(coordinates[0], coordinates[1])
+      const kb = kc.utils.getLinearSlopeIntercept(coordinates[0], coordinates[1])
       let offsetAngle
       if (kb) {
         offsetAngle = Math.atan(kb[0]) + Math.PI * flag
