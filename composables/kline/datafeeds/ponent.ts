@@ -28,6 +28,7 @@ export default class PonentDatafeed implements Datafeed{
     const mins = Math.round(period.secs / 60)
     const data = {"code":symbol.ticker ,fromts, tots,"count":1000,"period":mins}
     const rsp = await $fetch(url, {
+      method: 'POST',
       body: data,
       headers: {
         'Access-Control-Allow-Origin': '*',
