@@ -38,6 +38,8 @@ export const useKlineStore = defineStore('kline', () => {
     'CCI', 'DMI', 'CR', 'PSY', 'DMA', 'TRIX', 'OBV', 'VR', 'WR', 'MTM', 'EMV',
     'SAR', 'ROC', 'PVT', 'AO']
 
+  const exchange = ref('SH')
+
   // 所有的指标列表
   const all_inds = reactive<BanInd[]>([])
   for(let name of local_mains){
@@ -66,6 +68,6 @@ export const useKlineStore = defineStore('kline', () => {
 
   return {chart, loadingChart, showLogin, showDrawBar, modalIndCfg, editPaneId, editIndName, authTFList,
     fireOhlcv, start_ms, stop_ms, fireKRange, klineLoaded, all_inds, cur_symbols, all_symbols, setCurSymbols,
-    color_short, color_long, pairs_loading, pairs_error, symbols
+    color_short, color_long, pairs_loading, pairs_error, symbols, exchange
   }
 })

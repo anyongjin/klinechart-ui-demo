@@ -41,6 +41,8 @@ export default class PolygonDatafeed implements Datafeed {
     }))
   }
 
+  async searchSymbols(keyword: string): Promise<SymbolInfo[]> {return []}
+
   async getHistoryKLineData ({symbol, period, from, to, strategy}: GetKlineArgs): Promise<KData> {
     const response = await fetch(`https://api.polygon.io/v2/aggs/ticker/${symbol.ticker}/range/${period.multiplier}/${period.timespan}/${from}/${to}?apiKey=${this._apiKey}`)
     const result = await response.json()

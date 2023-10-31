@@ -256,5 +256,19 @@ export function useSymbols() {
       })
   }
 
-  return {loadSymbols}
+  async function searchSymbols(keyword: string) {
+    if (main.pairs_loading) return
+    main.pairs_loading = true
+    main.pairs_error = ''
+    try {
+      const res = await datafeed.searchSymbols(keyword)
+      main.cur_symbols.splice(0, main.cur_symbols.length, ...res)
+      main.pairs_loading = false
+    } catch (err) {
+      main.pairs_error = JSON.stringify(err)
+      main.pairs_loading = false
+    }
+  }
+
+  return {loadSymbols, searchSymbols}
 }

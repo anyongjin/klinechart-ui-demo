@@ -12,6 +12,7 @@ export interface SymbolInfo {
   priceCurrency?: string
   type?: string
   logo?: string
+  title?: string
 }
 
 export interface Period {
@@ -44,6 +45,7 @@ export type GetKlineArgs = {
 
 export interface Datafeed {
   getSymbols (): Promise<SymbolInfo[]>
+  searchSymbols (keyword: string): Promise<SymbolInfo[]>
   getHistoryKLineData (args: GetKlineArgs): Promise<KData>
   subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedWatchCallback): void
   unsubscribe (symbol: SymbolInfo, period: Period): void

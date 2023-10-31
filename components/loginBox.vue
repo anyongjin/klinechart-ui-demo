@@ -2,7 +2,7 @@
   <Modal :title="$t(form_mode)" :width="500" v-model="showModal">
     <div class="login-box">
       <div class="logo-box">
-        <img src="/logo_192.png" alt="logo"/>
+        <img src="/logo.png" alt="logo"/>
       </div>
       <el-form v-if="form_mode == 'register'" ref="regFormRef" :model="regForm" :rules="regRules"
         class="form-area" status-icon>

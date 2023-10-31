@@ -79,20 +79,14 @@
     </div>
     <div class="right-area">
       <client-only>
-          <el-dropdown class="user" v-if="authStatus > 0">
-          <div class='item tools big120'>
-              <Icon name="user"/>
-          </div>
-          <template #dropdown>
-              <el-dropdown-menu>
-              <el-dropdown-item @click="exitLogin">{{$t('exit_login')}}</el-dropdown-item>
-              </el-dropdown-menu>
-          </template>
-          </el-dropdown>
-        <div class="item tools" v-else @click="store.showLogin = true">
+        <div class='item tools' v-if="authStatus > 0">个人信息</div>
+        <div class="item tools" v-else @click="clickLogin">
           <span>{{$t('login')}}</span>
         </div>
       </client-only>
+      <div class='item tools'>
+        <el-link href="/disclaimer" target="_blank">免责声明</el-link>
+      </div>
       <div class="item tools big120" v-if="hasRight">
         <svg
           :class="{rotate: klocal.showRight}"
@@ -162,6 +156,10 @@
       period.value = p
     }, {immediate: true})
   })
+
+  function clickLogin(){
+    window.location.href = '/login'
+  }
 
   function exitLogin(){
     authData.value = null

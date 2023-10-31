@@ -71,6 +71,8 @@ export default class CoingeckoDatafeed implements Datafeed{
     }))
   }
 
+  async searchSymbols(keyword: string): Promise<SymbolInfo[]> {return []}
+
   subscribe(symbol: SymbolInfo, period: Period, callback: DatafeedWatchCallback): void {
   }
 

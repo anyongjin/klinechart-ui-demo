@@ -11,7 +11,7 @@
       </template>
     </Input>
     <List class="klinecharts-pro-symbol-search-modal-list" :loading="main.pairs_loading">
-      <li v-for="symbol in matchSymbols" :key="symbol.name" @click="clickSymbol(symbol)">
+      <li v-for="symbol in show_list" :key="symbol.name" @click="clickSymbol(symbol)">
         <div>
           <img v-if="symbol.logo" :src="symbol.logo" />
           <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}</span>
@@ -39,12 +39,8 @@ const props = defineProps<{
 const keyword = ref('')
 const main = useKlineStore()
 const store = useKlineLocal()
-
-const matchSymbols = computed(() => {
-  if(!keyword.value)return main.symbols
-  const search = keyword.value.toUpperCase()
-  return main.symbols.filter(s => s.ticker.includes(search))
-})
+const {searchSymbols} = useSymbols()
+const show_list = reactive<SymbolInfo[]>([])
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -63,6 +59,23 @@ function clickSymbol(symbol: SymbolInfo){
   showModal.value = false;
   store.setSymbol(symbol)
 }
+
+watch(keyword, (new_val) => {
+  if(!new_val){
+    show_list.splice(0, show_list.length, ...main.symbols)
+    return
+  }
+  if(main.all_symbols.length) {
+    const search = keyword.value.toUpperCase()
+    const res = main.symbols.filter(s => s.ticker.includes(search))
+    show_list.splice(0, show_list.length, ...res)
+    return;
+  }
+  // 未加载全部币列表，请求搜索
+  searchSymbols(keyword.value).then(() => {
+    show_list.splice(0, show_list.length, ...main.symbols)
+  })
+})
 
 </script>
 
