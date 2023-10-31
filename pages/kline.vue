@@ -1,32 +1,72 @@
 <template>
-  <KLineCharPro ref="chart" :datafeed="datafeed" :watermark="watermark" :symbol="symbol" :periods="periods"/>
+  <KlineChart :has-right="false"/>
 </template>
 
 <script setup lang="ts">
-import KLineCharPro from "~/components/kline/chart_pro.vue"
-import {CoingeckoDatafeed} from "~/composables/kline/datafeeds"
-import {reactive, ref} from "vue"
+import {useKlineLocal} from "~/stores/klineLocal";
+import {makePeriod, useSymbols} from "~/composables/kline/coms";
+import {useKlineStore} from "~/stores/kline";
+import {setTimezone} from "~/composables/dateutil";
+const {exg, symbol, period, ind} = useRoute().query
 
-const watermark = ref('<img width="504" src="/logo.png"/>')
+const klocal = useKlineLocal()
+const store = useKlineStore()
+const {loadSymbols} = useSymbols()
+const queryLoaded = ref(false)
 
-const datafeed = ref(new CoingeckoDatafeed())
 
-const symbol = reactive(datafeed.value.getDefaultSymbol())
-const periods = reactive(datafeed.value.getAllPeriods())
+function loadQueryInds(){
+  if(queryLoaded.value)return
+  queryLoaded.value = true
+  let ticker = klocal.symbol.ticker;
+  if(typeof symbol === 'string' && symbol){
+    ticker = symbol
+  }
+  let exchange = klocal.symbol.exchange
+  if(typeof exg === 'string' && exg){
+    exchange = exg
+  }
+  const mats = store.all_symbols.filter(
+    s => s.exchange == exchange && s.ticker == ticker)
+  if(mats.length > 0) {
+    klocal.setSymbol(mats[0])
+  }
+  if(typeof period === 'string' && period){
+    klocal.setPeriod(makePeriod(period))
+  }
+  if(typeof ind === 'string' && ind){
+    const knowns = store.all_inds.reduce((acc: Record<string, boolean>, obj) => {acc[obj.name] = obj.is_main; return acc}, {})
+    const added = klocal.save_inds.map(v => v.name)
+    ind.split('+').forEach(name => {
+      if(added.includes(name))return
+      if(name in knowns){
+        const pane_id = knowns[name] ? 'candle_pane': `pane_${name}`
+        klocal.save_inds.push({name, pane_id})
+      }
+      else{
+        klocal.save_inds.push({name, pane_id: ''})
+        console.log('add unknown ind:', name)
+      }
+    })
+  }
+}
 
+onMounted(() => {
+  setTimezone()
+  loadSymbols()
+})
+
+watch(() => store.pairs_loading, (loading) => {
+  if(loading)return
+  loadQueryInds()
+})
 
 </script>
 
 <style lang="scss">
-@import "~/assets/klinebase.scss";
-body{
-  margin: 0;
-  min-height: 100vh;
-}
-#__nuxt{
-  height: 100vh;
-}
-.#{$prefix-cls}{
-  height: 100%;
+.kline-slide{
+  .opinion-box{
+    flex-grow: 1;
+  }
 }
 </style>

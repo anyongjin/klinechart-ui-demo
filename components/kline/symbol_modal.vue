@@ -1,7 +1,7 @@
 <template>
   <Modal :title="$t('symbol_search')" :width="460" v-model="showModal">
-    <Input :value="keyword" class-name="klinecharts-pro-symbol-search-modal-input"
-           :placeholder="$t('symbol_code')" @keyup="keyword = $event">
+    <Input v-model="keyword" class="klinecharts-pro-symbol-search-modal-input"
+           :placeholder="$t('symbol_code')">
       <template #suffix>
         <span class="suffix">
           <svg viewBox="0 0 1024 1024">
@@ -10,8 +10,8 @@
         </span>
       </template>
     </Input>
-    <List class-name="klinecharts-pro-symbol-search-modal-list" :loading="loading">
-      <li v-for="symbol in symbols" :key="symbol.name" @click="clickSymbol(symbol)">
+    <List class="klinecharts-pro-symbol-search-modal-list" :loading="main.pairs_loading">
+      <li v-for="symbol in matchSymbols" :key="symbol.name" @click="clickSymbol(symbol)">
         <div>
           <img v-if="symbol.logo" :src="symbol.logo" />
           <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}</span>
@@ -27,19 +27,26 @@ import Modal from "~/components/kline/modal.vue"
 import Input from "~/components/kline/input.vue"
 import List from "~/components/kline/list.vue"
 import {defineEmits, defineProps, reactive, ref, computed} from "vue";
-import {Datafeed, SymbolInfo} from "~/components/kline/types";
-import {useSearchSymbol} from "~/composables/kline/search_symbols"
+import {type SymbolInfo} from "~/composables/types";
+import {useSymbols} from "~/composables/kline/coms"
+import {useKlineLocal} from "~/stores/klineLocal";
+import {useKlineStore} from "#imports";
 
 const props = defineProps<{
-  datafeed: Datafeed
   modelValue: boolean
 }>()
 
 const keyword = ref('')
-const {symbols, error, loading} = useSearchSymbol(props.datafeed, keyword)
+const main = useKlineStore()
+const store = useKlineLocal()
+
+const matchSymbols = computed(() => {
+  if(!keyword.value)return main.symbols
+  const search = keyword.value.toUpperCase()
+  return main.symbols.filter(s => s.ticker.includes(search))
+})
 
 const emit = defineEmits<{
-  select: [symbol: SymbolInfo],
   'update:modelValue': [value: boolean]
 }>()
 
@@ -54,7 +61,7 @@ const showModal = computed({
 
 function clickSymbol(symbol: SymbolInfo){
   showModal.value = false;
-  emit('select', symbol)
+  store.setSymbol(symbol)
 }
 
 </script>

@@ -17,20 +17,20 @@
 
 # 其他注意
  **多语言i18n**  
-不要使用nuxt官方的i18n模块，使用[这个](https://vue-i18n.intlify.dev/guide/integrations/nuxt3.html)  
+[官方文档](https://v8.i18n.nuxtjs.org/)  
+目前已知无法根据识别的语言自动跳转，等待i18n更新    
 
 # Nuxt 3 配置
-
-### 安装项目
 ```bash
+# 安装项目
 yarn install
-```
-### 开发模式运行
-```bash
-yarn dev
-```
 
-### 部署到生产环境
-```bash
+# 清除缓存
+yarn cache clean
+
+# 开发模式运行
+yarn dev
+
+# 部署到生产环境
 yarn build && node .output/server/index.mjs
 ```

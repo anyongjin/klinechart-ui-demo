@@ -8,17 +8,46 @@ $widget-height: calc(100% - $period-bar-height);
 $c-primary: #1677ff;
 
 /* @c-hover-background-light: fade(#353539, 10%);*/
-$c-hover-background-light: fade(#1677ff, 15%);
+$c-hover-background-light: rgba(22, 119, 255, 0.15);
 $c-popover-background-light: #ffffff;
 $c-background-light: #ffffff;
 $c-text-light: #051441;
 $c-text-second-light: #76808F;
 $c-border-light: #ebedf1;
 
-$c-hover-background-dark: fade(#1677ff, 15%);
+$c-hover-background-dark: rgba(22, 119, 255, 0.15);
 /* @c-hover-background-dark: fade(#a3a4d5, 10%);*/
 $c-background-dark: #151517;
 $c-popover-background-dark: #1c1c1f;
-$c-text-dark: #f8f8f8;
+$c-text-dark: #cccccc;
 $c-text-second-dark: #929AA5;
 $c-border-dark: #292929;
+
+/* 自定义样式 */
+$c-bar-up-color: rgb(14, 203, 129);
+$c-bar-down-color: rgb(246, 70, 93);
+$c-active-color: #1677ff;
+
+/*滚动条*/
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #777 #ddd;
+  box-sizing: border-box;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 7px;
+}
+*::-webkit-scrollbar-track {
+  background: #ddd;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #777;
+  border-radius: 20px;
+  border: none;
+}
+
+#__nuxt{
+  --c-aside-width: 300px;
+}

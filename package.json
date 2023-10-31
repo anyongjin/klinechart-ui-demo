@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -9,14 +10,22 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@intlify/unplugin-vue-i18n": "^0.11.0",
-    "@types/node": "^18",
-    "nuxt": "^3.5.2",
-    "nuxt-lodash": "^2.4.1",
-    "sass": "^1.62.1",
-    "vue-i18n": "^9.2.2"
+    "@element-plus/nuxt": "^1.0.6",
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/i18n": "^8.0.0-rc.5",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
+    "element-plus": "^2.4.1",
+    "nuxt": "^3.8.0",
+    "nuxt-lodash": "^2.5.3",
+    "sass": "^1.69.5",
+    "ts-essentials": "^9.4.1",
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "klinecharts": "^9.4.0"
+    "@pinia/nuxt": "^0.5.1",
+    "klinecharts": "^9.5.4",
+    "mitt": "^3.0.1",
+    "pinia": "^2.1.7"
   }
 }

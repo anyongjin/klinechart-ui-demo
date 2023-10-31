@@ -1,8 +1,7 @@
 <template>
-  <div :style="cssVars" class="klinecharts-pro-input" :class="className"
-    :data-status="status" @click="clickBox">
+  <div class="klinecharts-pro-input" :data-status="status" @click="clickBox">
     <slot name="prefix"/>
-    <input ref="input" class="value" :placeholder="placeholder" :value="value"
+    <input ref="input" class="value" :placeholder="placeholder" :value="modelValue"
            @focus="status = 'focus'" @blur="status = 'normal'"
            @keyup="inputChange($event, 'keyup')" @change="inputChange($event, 'change')">
     <slot name="suffix"/>
@@ -10,23 +9,19 @@
 </template>
 
 <script setup lang="ts">
-
 import {onMounted, ref} from "vue";
-import {ChangeEvent} from "rollup";
 
 const props = defineProps<{
-  cssVars?: string,
-  className?: string,
   precision?: number
   min?: number
   max?: number
   placeholder?: string
-  value: string | number
+  modelValue: string | number
   disabled?: boolean
 }>()
 
 const emit = defineEmits<{
-  change: [value: number | string],
+  'update:modelValue': [value: number | string],
   keyup: [value: number | string],
 }>()
 
@@ -56,7 +51,7 @@ function inputChange(e: any, name: string){
     if(props.max && v > props.max)return;
   }
   if(name == 'change'){
-    emit('change', v);
+    emit('update:modelValue', v);
   }
   else{
     emit('keyup', v);

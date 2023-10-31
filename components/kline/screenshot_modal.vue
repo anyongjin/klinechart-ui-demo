@@ -7,8 +7,7 @@
 
 <script setup lang="ts">
 import Modal from "~/components/kline/modal.vue"
-import {computed, defineProps} from "vue";
-import {defineEmits} from "vue/dist/vue";
+import {computed, defineProps, defineEmits} from "vue";
 
 const props = defineProps<{
   url: string,

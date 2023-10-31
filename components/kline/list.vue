@@ -1,5 +1,5 @@
 <template>
-  <ul class="klinecharts-pro-list" :class="className" :style="cssVars">
+  <ul class="klinecharts-pro-list">
     <Loading v-if="loading"/>
     <slot v-else/>
   </ul>
@@ -10,8 +10,6 @@ import Loading from "~/components/kline/loading.vue"
 import {defineProps} from "vue";
 
 const props = defineProps<{
-  className?: string,
-  cssVars?: string,
   loading?: boolean
 }>()
 

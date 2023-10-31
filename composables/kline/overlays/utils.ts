@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Coordinate, Bounding, LineAttrs } from 'klinecharts'
+import { type Coordinate, type Bounding, type LineAttrs } from 'klinecharts'
 import kc from "klinecharts"
 
 export function getRotateCoordinate (coordinate: Coordinate, targetCoordinate: Coordinate, angle: number): Coordinate {

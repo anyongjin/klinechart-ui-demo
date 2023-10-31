@@ -1,6 +1,5 @@
-import {KLineData} from "klinecharts";
-import {Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback} from "~/components/kline/types";
-import {adjustFromTo} from "~/composables/kline/coms";
+import {type Datafeed, type SymbolInfo, type Period, type DatafeedWatchCallback, type KData, type GetKlineArgs} from "~/composables/types";
+import {adjustFromTo} from "~/composables/dateutil";
 
 
 /**
@@ -16,21 +15,6 @@ import {adjustFromTo} from "~/composables/kline/coms";
  */
 export default class CoingeckoDatafeed implements Datafeed{
 
-  getDefaultSymbol(): SymbolInfo {
-    return {ticker: 'bitcoin', name: 'BTC', exchange: 'binance'}
-  }
-
-  canSymbolSearch(): boolean {
-    return false
-  }
-  getAllPeriods(): Period[] {
-    return [
-      { multiplier: 30, timespan: 'minute', text: '30m', timeframe: '30m' },
-      { multiplier: 4, timespan: 'hour', text: '4H', timeframe: '4h' },
-      { multiplier: 4, timespan: 'day', text: '4D', timeframe: '4d' },
-    ]
-  }
-
   /**
    * coins/{id}/ohlc  免费用户最小30m间隔，无历史数据
    * 1 - 2 days: 30 minutes
@@ -41,7 +25,7 @@ export default class CoingeckoDatafeed implements Datafeed{
    * @param from
    * @param to
    */
-  async getHistoryKLineData(symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]> {
+  async getHistoryKLineData({symbol, period, from, to, strategy}: GetKlineArgs): Promise<KData> {
     let days = 1;
     if(period.timeframe === '4h'){
       days = 30
@@ -49,29 +33,30 @@ export default class CoingeckoDatafeed implements Datafeed{
     else if(period.timeframe === '4d'){
       days = 365
     }
-    let qDeriod: Period = {timespan: 'day', multiplier: 1, timeframe: '1d', text: 'D'};
+    let qDeriod: Period = {timespan: 'day', multiplier: 1, timeframe: '1d', text: 'D', secs: 86400};
     const [okstart, okend] = adjustFromTo(qDeriod, new Date().getTime(), days)
     const min_start = okstart + (okend - okstart) * 0.1
-    if(to <= min_start || from >= okend)return []
+    if(to <= min_start || from >= okend)return {data: []}
     const url = `https://api.coingecko.com/api/v3/coins/${symbol.ticker}/ohlc?vs_currency=usd&days=${days}`
     const response = await fetch(url, {
       headers: {'Access-Control-Allow-Origin': '*'}
     })
     const result = await response.json()
-    return await (result || []).map((data: any) => ({
+    const bars = await (result || []).map((data: any) => ({
       timestamp: data[0],
       open: data[1],
       high: data[2],
       low: data[3],
       close: data[4],
     }))
+    return {data: bars}
   }
 
   /**
    * coins/{id}/tickers  获取某个交易所，所有币基于某个定价币usdt的行情
    * @param search
    */
-  async searchSymbols(search?: string): Promise<SymbolInfo[]> {
+  async getSymbols(): Promise<SymbolInfo[]> {
     // 这里固定参数，tether, binance
     const rsp = await fetch('https://api.coingecko.com/api/v3/coins/tether/tickers?exchange_ids=binance')
     const result = await rsp.json()
@@ -86,7 +71,7 @@ export default class CoingeckoDatafeed implements Datafeed{
     }))
   }
 
-  subscribe(symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void {
+  subscribe(symbol: SymbolInfo, period: Period, callback: DatafeedWatchCallback): void {
   }
 
   unsubscribe(symbol: SymbolInfo, period: Period): void {

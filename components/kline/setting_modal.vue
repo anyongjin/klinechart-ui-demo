@@ -1,12 +1,13 @@
 <template>
-  <Modal :title="$t('setting')" :width="560" :buttons="['restore_default']"
-         v-model="showModal" @click="$emit('reset')">
+  <Modal :title="$t('language')" :width="660" :buttons="['restore_default']"
+         v-model="showModal" @click="resetStyle">
     <div class="klinecharts-pro-setting-modal-content">
       <template v-for="(item, index) in options" :key="item.key">
-        <span>{{item.text}}</span>
-        <Select v-if="item.component == 'select'" :data-source="item.dataSource" css-vars="width: 120px"
-                :value="$t(kc.utils.formatValue(styles, item.key))" @change="update(item.key, $event.key)"/>
-        <Switch v-else-if="item.component == 'switch'" :open="!!kc.utils.formatValue(styles, item.key)"
+        <span>{{$t(item.text)}}</span>
+        <Select v-if="item.component == 'select'" :data-source="item.dataSource"
+                style="width: 120px" :translate="true"
+                :value="$t(kc.utils.formatValue(store.chartStyle, item.key))" @change="update(item.key, $event.key)"/>
+        <Switch v-else-if="item.component == 'switch'" :open="!!kc.utils.formatValue(store.chartStyle, item.key)"
                 @change="update(item.key, $event)"/>
       </template>
     </div>
@@ -18,21 +19,22 @@ import Modal from "~/components/kline/modal.vue"
 import {getOptions} from "~/components/kline/setting_opts";
 import Select from "~/components/kline/select.vue"
 import Switch from "~/components/kline/switch.vue"
-import {computed, defineEmits, defineProps, reactive} from "vue";
-import {useNuxtApp} from "#app";
-const {t} = useNuxtApp()
+import {computed, defineEmits, defineProps, reactive, watch} from "vue";
 import {Chart, Styles} from "klinecharts";
 import kc from "klinecharts"
 import _ from "lodash"
+import {useI18n} from "vue-i18n";
+import {useKlineLocal} from "~/stores/klineLocal";
+import {useKlineStore} from "~/stores/kline";
+const {t} = useI18n()
+const store = useKlineLocal()
+const main = useKlineStore()
 const props = defineProps<{
-  currentStyles: Styles,
   modelValue: boolean
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean],
-  'change': [styles: Styles],
-  'reset': []
 }>()
 
 const showModal = computed({
@@ -44,12 +46,16 @@ const showModal = computed({
   }
 })
 
-const styles = reactive(props.currentStyles ?? {})
 const options = reactive(getOptions())
 
 function update(key: string, value: any){
-  _.set(styles, key, value)
-  emit('change', styles)
+  store.setStyleItem(key, value)
+  main.chart?.setStyles(store.chartStyle as Styles)
+}
+
+function resetStyle(){
+  store.resetStyle()
+  main.chart?.setStyles(store.chartStyle as Styles)
 }
 
 </script>

@@ -1,29 +1,32 @@
 <template>
-  <Modal :title="$t('indicator')" :width="800" v-model="showModal">
-    <div class="kc-ind-modal">
-      <List class="klinecharts-pro-ind-box ind-col left-pane">
-        <div class="row title">{{$t(active_pane == 'candle_pane' ? 'main_indicator': 'sub_indicator')}}</div>
-        <div class="row" v-for="(item, index) in all_pane_inds" :key="item.name">
-          <span @click="addActiveInd(item.name)">{{ $t(item.name.toLowerCase()) }}</span>
+  <Modal :title="$t('indicator')" :width="600" v-model="showModal">
+    <Input v-model="keyword" class="klinecharts-pro-symbol-search-modal-input"
+           :placeholder="$t('search')">
+      <template #suffix>
+        <span class="suffix">
+          <svg viewBox="0 0 1024 1024">
+            <path d="M945.066667 898.133333l-189.866667-189.866666c55.466667-64 87.466667-149.333333 87.466667-241.066667 0-204.8-168.533333-373.333333-373.333334-373.333333S96 264.533333 96 469.333333 264.533333 842.666667 469.333333 842.666667c91.733333 0 174.933333-34.133333 241.066667-87.466667l189.866667 189.866667c6.4 6.4 14.933333 8.533333 23.466666 8.533333s17.066667-2.133333 23.466667-8.533333c8.533333-12.8 8.533333-34.133333-2.133333-46.933334zM469.333333 778.666667C298.666667 778.666667 160 640 160 469.333333S298.666667 160 469.333333 160 778.666667 298.666667 778.666667 469.333333 640 778.666667 469.333333 778.666667z"/>
+          </svg>
+        </span>
+      </template>
+    </Input>
+    <div class="res-body">
+      <div class="menu-box">
+        <div class="item" @click="activeTab = 'local'" :class="{active: activeTab == 'local'}">
+          <el-icon><TakeawayBox /></el-icon>
+          <span>{{$t('local_inds')}}</span>
+        </div>
+        <div class="item" @click="activeTab = 'cloud'" :class="{active: activeTab == 'cloud'}">
+          <el-icon><Cloudy /></el-icon>
+          <span>{{$t('cloud_inds')}}</span>
+        </div>
+      </div>
+      <List class="klinecharts-pro-ind-box">
+        <div class="row" v-for="(item, index) in show_inds" :key="index">
+          <Checkbox :model-value="checked_inds.includes(item.name)" :label="$t(item.title)"
+                    @change="toggleInd(item.is_main, item.name, $event)"/>
         </div>
       </List>
-      <div class="select-box ind-col">
-        <List class="klinecharts-pro-ind-box pane-box" v-for="pane in _panes" :key="pane.name">
-          <div class="row title" @click="active_pane = pane.name">{{paneTitle(pane)}}</div>
-          <template v-if="pane.name == active_pane">
-            <div class="row" v-for="(item, index) in pane.inds" :key="item">
-              <span>{{ $t(item.toLowerCase()) }}</span>
-              <svg @click="clickIndDelete(item)" class="icon" viewBox="0 0 1024 1024" p-id="2382" width="20" height="20">
-                <path d="M176 130.752l-45.248 45.248 22.72 22.528L466.752 512l-336 336 45.248 45.248L512 557.248l313.28 313.472 22.72 22.528 45.248-45.248-22.528-22.72L557.248 512l336-336-45.248-45.248L512 466.752 198.528 153.472z" fill="" p-id="2383"></path>
-              </svg>
-            </div>
-            <div class="row" v-if="!pane.inds.length">
-              <span>{{ $t('check_from_left') }}</span>
-            </div>
-          </template>
-        </List>
-        <div class="add-pane" @click="addSubPane">{{ $t('add_sub_pane') }}</div>
-      </div>
     </div>
   </Modal>
 </template>
@@ -31,26 +34,25 @@
 <script setup lang="ts">
 import Modal from "~/components/kline/modal.vue"
 import List from "~/components/kline/list.vue"
-import {PaneInds} from "~/components/kline/types";
-import {computed, defineEmits, defineProps, reactive} from "vue";
-import {Chart} from "klinecharts";
-import Checkbox from "~/components/kline/checkbox.vue";
-import i18n from "~/composables/i18n"
-let t = i18n.global.t
+import Checkbox from "~/components/kline/checkbox.vue"
+import {type PaneInds} from "~/composables/types";
+import {computed, defineEmits, defineProps, reactive, watch} from "vue";
+import kc, {Chart} from "klinecharts";
+import {useKlineLocal} from "~/stores/klineLocal";
+import {useNuxtApp} from "#app"
+import Input from "~/components/kline/input.vue";
+import {useI18n} from "vue-i18n";
+const {t} = useI18n()
+import {TakeawayBox, Cloudy} from "@element-plus/icons-vue";
+import {useKlineStore} from "~/stores/kline";
+
 
 const props = defineProps<{
   modelValue: boolean,
-  panes: PaneInds[]
 }>()
 
-const _panes = reactive(props.panes ?? [])
-if(!_panes.find(i => i.name == 'candle_pane')){
-  _panes.unshift({name: 'candle_pane', inds: []})
-}
-const active_pane = ref('candle_pane')
 
 const emit = defineEmits<{
-  'change': [paneId: string, ind_name: string, is_add: boolean],
   'update:modelValue': [value: boolean]
 }>()
 
@@ -63,119 +65,42 @@ const showModal = computed({
   }
 })
 
-type IndItem = {
-  name: string,
-  is_main: boolean
-}
+const {$emit} = useNuxtApp()
+const store = useKlineLocal()
+const main = useKlineStore()
 
+const keyword = ref('')
+const activeTab = ref('local')
 
-const all_inds = reactive([
-    {name: 'MA', is_main: true},
-    {name: 'EMA', is_main: true},
-    {name: 'SMA', is_main: true},
-    {name: 'BOLL', is_main: true},
-    {name: 'SAR', is_main: true},
-    {name: 'BBI', is_main: true},
-    {name: 'VOL', is_main: false},
-    {name: 'MACD', is_main: false},
-    {name: 'KDJ', is_main: false},
-    {name: 'RSI', is_main: false},
-    {name: 'BIAS', is_main: false},
-    {name: 'BRAR', is_main: false},
-    {name: 'CCI', is_main: false},
-    {name: 'DMI', is_main: false},
-    {name: 'CR', is_main: false},
-    {name: 'PSY', is_main: false},
-    {name: 'DMA', is_main: false},
-    {name: 'TRIX', is_main: false},
-    {name: 'OBV', is_main: false},
-    {name: 'VR', is_main: false},
-    {name: 'WR', is_main: false},
-    {name: 'MTM', is_main: false},
-    {name: 'EMV', is_main: false},
-    {name: 'SAR', is_main: false},
-    {name: 'ROC', is_main: false},
-    {name: 'PVT', is_main: false},
-    {name: 'AO', is_main: false},
-])
-
-const all_pane_inds = computed(() => {
-  if(active_pane.value == 'candle_pane'){
-    return all_inds.filter(it => it.is_main)
+const show_inds = computed(() => {
+  if(keyword.value){
+    const word = keyword.value.toUpperCase()
+    return main.all_inds.filter(i => i.name.includes(word) || i.title.includes(word))
   }
-  else{
-    return all_inds.filter(it => !it.is_main)
+  if(activeTab.value == 'local'){
+    return main.all_inds.filter(i => !i.cloud)
   }
+  return main.all_inds.filter(i => i.cloud)
 })
 
+const checked_inds = computed((): string[] => {
+  return store.save_inds.map(d => d.name)
+})
 
-function paneTitle(pane: PaneInds){
-  let result = [];
-  if(pane.name == 'candle_pane'){
-    result.push(t('main_pane') + ':')
-  }
-  else {
-    result.push(pane.name + ':')
-  }
-  for(let ind_name of pane.inds){
-    result.push(ind_name)
-    result.push(' ')
-  }
-  return result.join('')
-}
-
-function addActiveInd(ind_name: string){
-  for(let pane of _panes){
-    if(pane.name == active_pane.value){
-      pane.inds.push(ind_name)
-      emit('change', active_pane.value, ind_name, true)
-      break
-    }
-  }
-}
-
-function clickIndDelete(ind_name: string){
-  for(let pane of _panes){
-    if(pane.name == active_pane.value){
-      pane.inds.splice(pane.inds.indexOf(ind_name), 1)
-      emit('change', active_pane.value, ind_name, false)
-      break
-    }
-  }
-}
-
-function addSubPane(){
-  let last = _panes[_panes.length - 1]
-  let cur_id = 1
-  if(last.name.startsWith('pane')){
-    cur_id = parseInt(last.name.substring(4)) + 1
-  }
-  let name = 'pane' + cur_id;
-  _panes.push({name, inds: []})
-  active_pane.value = name
+function toggleInd(is_main: boolean, name: string, val: any){
+  $emit('set_ind', {is_main, ind_name: name, is_add: val as boolean})
 }
 
 </script>
 
 <style lang="scss">
 @import '~/assets/klinebase.scss';
-
-.kc-ind-modal{
-  display: flex;
-  flex-direction: row;
-  .ind-col{
-    flex-grow: 1;
-    max-height: 500px;
-    width: 50%;
-    overflow-y: scroll;
-  }
-  .left-pane{
-    border-right: 1px solid #aaaaaa;
-  }
+.#{$prefix-cls}-symbol-search-modal-input{
+  margin: 10px 0;
 }
-
 .#{$prefix-cls}-ind-box {
-  min-height: 0;
+  flex-grow: 1;
+
   .title {
     position: sticky;
     top: 0;
@@ -193,34 +118,43 @@ function addSubPane(){
     box-sizing: border-box;
     cursor: pointer;
     justify-content: space-between;
+    .#{$prefix-cls}-checkbox{
+      flex-grow: 1;
+    }
   }
   .row:hover {
+    background: var(--klinecharts-pro-hover-background-color);
     .checkbox {
       fill: var(--klinecharts-pro-primary-color);
       color: var(--klinecharts-pro-primary-color);
     }
   }
 }
-
-.pane-box{
-  border: 1px solid $c-text-second-dark;
-  border-radius: 10px;
-  margin: 10px;
-  .title{
-    background-color: #eeeeee;
-  }
+.res-body{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 500px;
 }
-
-.add-pane{
-  padding: 0 20px;
-  text-align: center;
-  height: 40px;
-  line-height: 40px;
-  color: $c-primary;
-  margin: 0 30px;
-  border-radius: 30px;
-  border: 1px solid $c-primary;
-  cursor: pointer;
+.menu-box{
+  width: 20%;
+  border-right: 1px solid var(--klinecharts-pro-border-color);
+  .item{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid var(--klinecharts-pro-border-color);
+    .el-icon{
+      margin-right: 7px;
+    }
+    &.active{
+      color: var(--klinecharts-pro-primary-color);
+    }
+    &:hover{
+      background: var(--klinecharts-pro-hover-background-color);
+    }
+  }
 }
 
 </style>

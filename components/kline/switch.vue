@@ -1,6 +1,5 @@
 <template>
-  <div class="klinecharts-pro-switch" :class="[className, open ? 'turn-on': 'turn-off']"
-      @click="$emit('change', !open)" :style="cssVars">
+  <div class="klinecharts-pro-switch" :class="[open ? 'turn-on': 'turn-off']" @click="$emit('change', !open)">
     <i class="thumb"/>
   </div>
 </template>
@@ -9,8 +8,6 @@
 import {defineProps} from "vue";
 
 const props = defineProps<{
-  className?: string,
-  cssVars?: string,
   open: boolean
 }>()
 

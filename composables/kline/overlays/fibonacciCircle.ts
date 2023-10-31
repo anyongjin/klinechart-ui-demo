@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { OverlayTemplate, CircleAttrs, TextAttrs } from 'klinecharts'
+import { type OverlayTemplate, type CircleAttrs, type TextAttrs } from 'klinecharts'
 
 const fibonacciCircle: OverlayTemplate = {
   name: 'fibonacciCircle',

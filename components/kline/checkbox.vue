@@ -1,5 +1,5 @@
 <template>
-  <div class="klinecharts-pro-checkbox" :class="className" :style="style" @click="showModal = !showModal">
+  <div class="klinecharts-pro-checkbox" @click="showModal = !showModal">
     <svg viewBox="0 0 1024 1024" class="icon">
       <path v-if="showModal"
         d="M810.666667 128H213.333333c-46.933333 0-85.333333 38.4-85.333333 85.333333v597.333334c0 46.933333 38.4 85.333333 85.333333 85.333333h597.333334c46.933333 0 85.333333-38.4 85.333333-85.333333V213.333333c0-46.933333-38.4-85.333333-85.333333-85.333333z m-353.706667 567.04a42.496 42.496 0 0 1-60.16 0L243.626667 541.866667c-8.106667-8.106667-12.373333-18.773333-12.373334-29.866667s4.693333-22.186667 12.373334-29.866667a42.496 42.496 0 0 1 60.16 0L426.666667 604.586667l293.546666-293.546667a42.496 42.496 0 1 1 60.16 60.16l-323.413333 323.84z"/>
@@ -14,8 +14,6 @@
 import {computed, defineEmits, defineProps, ref} from "vue";
 
 const props = defineProps<{
-  className?: string,
-  cssVars?: string,
   label?: string,
   modelValue: boolean,
 }>()
@@ -44,7 +42,6 @@ const showModal = computed({
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
   font-size: 14px;
   color: var(--klinecharts-pro-text-color);
   fill: var(--klinecharts-pro-text-color);

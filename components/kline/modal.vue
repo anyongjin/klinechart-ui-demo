@@ -105,5 +105,8 @@ function clickButton(from: string){
       padding: 20px 20px 26px 20px;
     }
   }
+  .#{$prefix-cls}-button{
+    margin-left: 20px;
+  }
 }
 </style>

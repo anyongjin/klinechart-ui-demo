@@ -126,3 +126,11 @@ export default {
     { paramNameKey: 'WR5', precision: 0, min: 1, styleKey: 'lines[4].color' },
   ]
 }
+
+export const GetIndDefaults = (name: string): any[] | undefined => {
+  switch (name) {
+    case "MA": return [5, 10, 30];
+    case "EMA": return [5, 10, 30];
+    default: return undefined
+  }
+}

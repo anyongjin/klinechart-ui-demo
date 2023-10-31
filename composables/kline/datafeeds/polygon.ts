@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 
-import { KLineData } from 'klinecharts'
-
-import { Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback } from "~/components/kline/types";
+import {type Datafeed, type SymbolInfo, type Period, type DatafeedWatchCallback, type KData, type GetKlineArgs} from "~/composables/types";
 
 
 export default class PolygonDatafeed implements Datafeed {
@@ -28,31 +26,8 @@ export default class PolygonDatafeed implements Datafeed {
 
   private _ws?: WebSocket
   
-  getDefaultSymbol(): SymbolInfo {
-    return {ticker: 'AAPL'}
-  }
-
-  canSymbolSearch(): boolean {
-    return true
-  }
-
-  getAllPeriods(): Period[] {
-    return [
-      { multiplier: 1, timespan: 'minute', text: '1m', timeframe: '1m' },
-      { multiplier: 5, timespan: 'minute', text: '5m', timeframe: '5m' },
-      { multiplier: 15, timespan: 'minute', text: '15m', timeframe: '15m' },
-      { multiplier: 1, timespan: 'hour', text: '1H', timeframe: '1h' },
-      { multiplier: 2, timespan: 'hour', text: '2H', timeframe: '2h' },
-      { multiplier: 4, timespan: 'hour', text: '4H', timeframe: '4h' },
-      { multiplier: 1, timespan: 'day', text: 'D', timeframe: '1d' },
-      { multiplier: 1, timespan: 'week', text: 'W', timeframe: '1w' },
-      { multiplier: 1, timespan: 'month', text: 'M', timeframe: '1M' },
-      { multiplier: 1, timespan: 'year', text: 'Y', timeframe: '1y' }
-    ]
-  }
-
-  async searchSymbols (search?: string): Promise<SymbolInfo[]> {
-    const response = await fetch(`https://api.polygon.io/v3/reference/tickers?apiKey=${this._apiKey}&active=true&search=${search ?? ''}`)
+  async getSymbols (search?: string): Promise<SymbolInfo[]> {
+    const response = await fetch(`https://api.polygon.io/v3/reference/tickers?apiKey=${this._apiKey}&active=true`)
     const result = await response.json()
     return await (result.results || []).map((data: any) => ({
       ticker: data.ticker,
@@ -66,10 +41,10 @@ export default class PolygonDatafeed implements Datafeed {
     }))
   }
 
-  async getHistoryKLineData (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]> {
+  async getHistoryKLineData ({symbol, period, from, to, strategy}: GetKlineArgs): Promise<KData> {
     const response = await fetch(`https://api.polygon.io/v2/aggs/ticker/${symbol.ticker}/range/${period.multiplier}/${period.timespan}/${from}/${to}?apiKey=${this._apiKey}`)
     const result = await response.json()
-    return await (result.results || []).map((data: any) => ({
+    const data = await (result.results || []).map((data: any) => ({
       timestamp: data.t,
       open: data.o,
       high: data.h,
@@ -78,9 +53,10 @@ export default class PolygonDatafeed implements Datafeed {
       volume: data.v,
       turnover: data.vw
     }))
+    return {data}
   }
 
-  subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void {
+  subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedWatchCallback): void {
     if (this._prevSymbolMarket !== symbol.market) {
       this._ws?.close()
       this._ws = new WebSocket(`wss://delayed.polygon.io/${symbol.market}`)

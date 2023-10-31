@@ -1,13 +1,16 @@
 <template>
-  <div class="klinecharts-pro-select" :style="cssVars" @blur="open = false" tabIndex="0"
-       :class="[className, open ? 'klinecharts-pro-select-show': '']">
+  <div class="klinecharts-pro-select" @blur="open = false" tabIndex="0"
+       :class="[open ? 'klinecharts-pro-select-show': '']">
     <div class="selector-container" @click="open = !open">
       <span class="value">{{value}}</span>
       <i class="arrow"/>
     </div>
     <div class="drop-down-container">
       <ul @click.prevent="open = false">
-        <li v-for="item in dataSource" @click="$emit('change', item)">{{item[value_key]}}</li>
+        <li v-for="item in dataSource" @click="$emit('change', item)">
+          <span v-if="translate">{{$t(item[value_key])}}</span>
+          <span v-else>{{item[value_key]}}</span>
+        </li>
       </ul>
     </div>
   </div>
@@ -17,15 +20,15 @@
 import {defineEmits, defineProps, ref} from "vue";
 
 type PropType = {
-  cssVars?: string,
-  className?: string,
   value?: string,
   value_key?: string,
+  translate?: boolean,
   dataSource: any[]
 }
 
 const props = withDefaults(defineProps<PropType>(), {
-  value_key: 'text'
+  value_key: 'text',
+  translate: false
 })
 
 const emit = defineEmits<{
