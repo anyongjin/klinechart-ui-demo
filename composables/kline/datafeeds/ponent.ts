@@ -31,7 +31,6 @@ export default class PonentDatafeed implements Datafeed{
       method: 'POST',
       body: data,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Authorization': defaults.data_token
       }
     })
