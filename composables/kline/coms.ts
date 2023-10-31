@@ -5,7 +5,7 @@ import {tf_to_secs, formatDate} from "~/composables/dateutil";
 import {useKlineStore} from "~/stores/kline";
 import {ref} from "#imports";
 import {type BarArr} from "~/composables/types";
-import {getDefaults} from "~/config";
+import {getAsyncDefaults, getDefaults} from "~/config";
 
 export const formatPrecision = kc.utils.formatPrecision
 export const formatThousands = kc.utils.formatThousands
@@ -14,6 +14,7 @@ const TooltipIconPosition = kc.TooltipIconPosition
 
 const _periods: Record<string, Period> = {}
 const defaults = getDefaults()
+const asyDefaults = await getAsyncDefaults()
 
 
 export function GetNumberDotOffset(value: number){
@@ -233,7 +234,7 @@ export function build_ohlcvs(details: BarArr[], in_msecs: number, tf_msecs: numb
  * 这些对象放在pinia的store中会报错，故使用use在多个组件间共享。
  */
 export function useKlineObjs(){
-  const datafeed = reactive(new defaults.Datafeed())
+  const datafeed = reactive(new asyDefaults.Datafeed())
 
   return {datafeed}
 }

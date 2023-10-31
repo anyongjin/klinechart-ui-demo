@@ -1,5 +1,4 @@
 import {type Period, type SymbolInfo} from "~/composables/types";
-import {PonentDatafeed} from "~/composables/kline/datafeeds";
 
 export function getDefaults() {
   return {
@@ -12,11 +11,17 @@ export function getDefaults() {
       exchange: 'SH',
       title: '中国平安'
     } as SymbolInfo,
-    Datafeed: PonentDatafeed,
     period: {multiplier: 1, timespan: 'day', text: '1D', timeframe: '1d', secs: 86400} as Period,
     maxBarNum: 5000,
     data_url: 'https://ponentsoft.com/api',
     // ponentsoft的验证token
     data_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia2FucGFuLmNuIiwiaWF0IjoxNjk0ODMwMzM3fQ.w93IBiBpGz-xhxi4mRX2xxN8PXH-J_psif7ytt1YKl8'
+  }
+}
+
+export async function getAsyncDefaults() {
+  const {PonentDatafeed} = await import("~/composables/kline/datafeeds")
+  return {
+    Datafeed: PonentDatafeed
   }
 }
