@@ -26,6 +26,7 @@
     "@pinia/nuxt": "^0.5.1",
     "klinecharts": "^9.5.4",
     "mitt": "^3.0.1",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "socket.io-client": "^4.7.2"
   }
 }

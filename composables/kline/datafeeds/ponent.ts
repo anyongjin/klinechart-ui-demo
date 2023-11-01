@@ -1,5 +1,13 @@
 import {$fetch} from "ofetch";
-import {type Datafeed, type SymbolInfo, type Period, type DatafeedWatchCallback, type KData, type GetKlineArgs} from "~/composables/types";
+import {
+  type Datafeed,
+  type SymbolInfo,
+  type Period,
+  type DatafeedWatchCallback,
+  type KData,
+  type GetKlineArgs,
+  type BarArr
+} from "~/composables/types";
 import {getDefaults} from "~/config";
 import {useKlineStore} from "#imports";
 const defaults = getDefaults()
@@ -7,12 +15,37 @@ const data_url = defaults.data_url
 const day_secs = tf_to_secs('1d')
 const week_secs = tf_to_secs('1w')
 const mon_secs = tf_to_secs('1M')
+import {io, Socket} from "socket.io-client"
+
+function getPeriodSecs(period: string){
+  if(period == '1M')return 2592000;
+  if(period == '1W')return 604800;
+  if(period == '1D')return 86400;
+  return parseInt(period) * 60
+}
+
+function getPeriodText(period: Period){
+  let period_val = Math.round(period.secs / 60).toString()
+  if(period.secs >= mon_secs){
+    period_val = '1M'
+  }
+  else if(period.secs >= week_secs){
+    period_val = '1W'
+  }
+  else if(period.secs >= day_secs){
+    period_val = '1D'
+  }
+  return period_val
+}
+
 
 /**
  * ponentsoft的数据源
  *
  */
 export default class PonentDatafeed implements Datafeed{
+
+  private _ws?: Socket
 
   /**
    * 传入的时间戳服务器端会转换为日期格式（+8的），没有严格使用时间戳，所以这里应确保取日期的开始结束时间戳
@@ -28,16 +61,7 @@ export default class PonentDatafeed implements Datafeed{
     let tots = Math.round(to / 1000)
     // 这个改为8个时区之前的
     tots = Math.round(tots / day_secs) * day_secs - 28801
-    let period_val = Math.round(period.secs / 60).toString()
-    if(period.secs >= mon_secs){
-      period_val = '1M'
-    }
-    else if(period.secs >= week_secs){
-      period_val = '1W'
-    }
-    else if(period.secs >= day_secs){
-      period_val = '1D'
-    }
+    const period_val = getPeriodText(period)
     const data = {"code":symbol.ticker ,fromts, tots,"count":1000,"period": period_val}
     const rsp = await $fetch(url, {
       method: 'POST',
@@ -91,9 +115,40 @@ export default class PonentDatafeed implements Datafeed{
   }
 
   subscribe(symbol: SymbolInfo, period: Period, callback: DatafeedWatchCallback): void {
+    this._ws?.disconnect()
+    this._ws = io(`${defaults.socket_url}/chart`, {
+      path: defaults.socket_path,
+      transports: ['websocket', 'polling'],
+      auth: {Authorization: defaults.data_token},
+      forceNew: true,
+    })
+    let last_bar: BarArr | null = null;
+    // 订阅数据
+    const period_val = getPeriodText(period)
+    let channel = `${symbol.ticker}~${period_val}`
+    if (this._ws.connected) {
+      this._ws.emit('subs', channel)
+    } else {
+      this._ws.on('connect', () => this._ws?.emit('subs', channel))
+    }
+    // 监听数据
+    this._ws.on('bars', (data: any) => {
+      let {code, period, minutes} = data
+      const first = minutes[0] as BarArr
+      if (last_bar && first[0] == last_bar[0]) {
+        // 如果和上一个推送的bar时间戳相同，则认为是其更新，减去上一个的volume，避免调用方错误累加
+        first[5] -= last_bar[5]
+      }
+      last_bar = minutes[minutes.length - 1]
+      callback({bars: minutes, secs: getPeriodSecs(period)})
+    })
   }
 
   unsubscribe(symbol: SymbolInfo, period: Period): void {
+    if(!this._ws)return
+    const period_val = getPeriodText(period)
+    let channel = `${symbol.ticker}~${period_val}`
+    this._ws.emit('cancel', channel)
   }
 
 }

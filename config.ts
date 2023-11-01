@@ -15,6 +15,8 @@ export function getDefaults() {
     maxBarNum: 5000,
     data_url: 'https://ponentsoft.com/api',
     // ponentsoft的验证token
-    data_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia2FucGFuLmNuIiwiaWF0IjoxNjk0ODMwMzM3fQ.w93IBiBpGz-xhxi4mRX2xxN8PXH-J_psif7ytt1YKl8'
+    data_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia2FucGFuLmNuIiwiaWF0IjoxNjk0ODMwMzM3fQ.w93IBiBpGz-xhxi4mRX2xxN8PXH-J_psif7ytt1YKl8',
+    socket_url: 'wss://ponentsoft.com',
+    socket_path: '/subs/socket.io'
   }
 }
