@@ -134,9 +134,10 @@ export default class PonentDatafeed implements Datafeed{
     }
     // 监听数据
     this._ws.on('bars', (data: any) => {
-      console.log(JSON.stringify(data))
       let {code, period, minutes} = data
-      for(let row of minutes){
+      for(let i = 0; i < minutes.length; i++){
+        let row = minutes[i]
+        console.log(typeof row[0])
         row[0] = row[0] * 1000
       }
       console.log('bars:', minutes, data)
