@@ -135,19 +135,17 @@ export default class PonentDatafeed implements Datafeed{
     // 监听数据
     this._ws.on('bars', (data: any) => {
       let {code, period, minutes} = data
-      for(let i = 0; i < minutes.length; i++){
-        let row = minutes[i]
-        console.log(typeof row[0], row[0], row, row[0] * 1000)
-        row[0] = row[0] * 1000
+      let bars: BarArr[] = []
+      for(let row of minutes) {
+        bars.push([row[0] * 1000, row[1], row[2], row[3], row[4], row[5]])
       }
-      console.log('bars:', minutes, data)
-      const first = minutes[0] as BarArr
+      const first = bars[0] as BarArr
       if (last_bar && first[0] == last_bar[0]) {
         // 如果和上一个推送的bar时间戳相同，则认为是其更新，减去上一个的volume，避免调用方错误累加
         first[5] -= last_bar[5]
       }
-      last_bar = minutes[minutes.length - 1]
-      callback({bars: minutes, secs: getPeriodSecs(period)})
+      last_bar = bars[bars.length - 1]
+      callback({bars, secs: getPeriodSecs(period)})
     })
   }
 
