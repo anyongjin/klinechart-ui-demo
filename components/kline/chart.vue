@@ -186,11 +186,11 @@ function initChart(chartObj: Chart){
     const [to] = adjustFromTo(klocal.period, end_ms, 1)
     const [from] = adjustFromTo(klocal.period, to, batch_num.value)
     const bars = await loadKlineData(from, to)
-    console.log(`load kline: last: ${last_ms.value} ${from}-${to} ${klocal.period.timeframe}`)
+    //console.log(`load kline: last: ${last_ms.value} ${from}-${to} ${klocal.period.timeframe}`)
     last_ms.value = Math.floor(from / day_secs) * day_secs - 28801
-    if(bars.length){
-      console.log(`get: ${bars[0].timestamp} ${bars[bars.length - 1].timestamp} last: ${last_ms.value}`)
-    }
+    // if(bars.length){
+    //   console.log(`get: ${bars[0].timestamp} ${bars[bars.length - 1].timestamp} last: ${last_ms.value}`)
+    // }
   })
 
   chartObj.subscribeAction(ActionType.OnTooltipIconClick, data => {
@@ -246,7 +246,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
     const pricePrec = GetNumberDotOffset(Math.min(klines[0].low, klines[klines.length - 1].low)) + 3
     chartObj.setPriceVolumePrecision(pricePrec, 0)
   }
-  const hasMore = loadMore && klines.length > 0;
+  const hasMore = loadMore; // && klines.length > 0;
   chartObj.applyNewData(klines, hasMore)
   last_ms.value = 0  // 重置第一个时间戳
   kdata.lays?.forEach(o => {
