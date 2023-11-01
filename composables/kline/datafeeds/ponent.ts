@@ -15,7 +15,7 @@ const mon_secs = tf_to_secs('1M')
 export default class PonentDatafeed implements Datafeed{
 
   /**
-   * 传入的时间戳服务器端会转换为日期格式，没有严格使用时间戳，所以这里应确保取日期的开始结束时间戳
+   * 传入的时间戳服务器端会转换为日期格式（+8的），没有严格使用时间戳，所以这里应确保取日期的开始结束时间戳
    * period: 1，5，10，15，30，60，120，1D， 1W， 1M
    * @param symbol
    * @param period
@@ -26,7 +26,8 @@ export default class PonentDatafeed implements Datafeed{
     const url = `${data_url}/app/bars`
     let fromts = Math.round(from / 1000)
     let tots = Math.round(to / 1000)
-    tots = Math.round(tots / day_secs) * day_secs - 1
+    // 这个改为8个时区之前的
+    tots = Math.round(tots / day_secs) * day_secs - 28801
     let period_val = Math.round(period.secs / 60).toString()
     if(period.secs >= mon_secs){
       period_val = '1M'
