@@ -244,7 +244,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
     symbol, period, from: start_ms, to: stop_ms, strategy
   })
   let count = 0
-  while (!kdata.data.length && count < 10){
+  while (!kdata.data.length && count < 10) {
     // 未抓取到数据重试
     let new_stop = start_ms
     start_ms -= (stop_ms - start_ms)
@@ -271,30 +271,30 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   // 触发K线加载完毕事件
   main.klineLoaded += 1
   if (klines.length) {
-    tf_msecs = tf_to_secs(period.timeframe) * 1000
-    const curTime = new Date().getTime()
-    const stop_ms = klines[klines.length - 1].timestamp + tf_msecs
-    if (stop_ms + tf_msecs > curTime) {
-      // 加载的是最新的bar，则自动开启websocket监听
-      datafeed.subscribe(symbol, period, result => {
-        const kline = chartObj.getDataList()
-        const last = kline[kline.length - 1]
-        const lastBar: BarArr | null = last && last.timestamp ? [
-          last.timestamp, last.open, last.high, last.low, last.close, last.volume ?? 0
-        ] : null
-        const ohlcvArr = build_ohlcvs(result.bars, result.secs * 1000, tf_msecs, lastBar)
-        addChartBars(chartObj, ohlcvArr.map(row => {
-          return {
-            timestamp: row[0],
-            open: row[1],
-            high: row[2],
-            low: row[3],
-            close: row[4],
-            volume: row[5]
-          }
-        }))
-      })
-    }
+    // tf_msecs = tf_to_secs(period.timeframe) * 1000
+    // const curTime = new Date().getTime()
+    // const stop_ms = klines[klines.length - 1].timestamp + tf_msecs
+    // if (stop_ms + tf_msecs > curTime) {
+    //   // 加载的是最新的bar，则自动开启websocket监听
+    datafeed.subscribe(symbol, period, result => {
+      const kline = chartObj.getDataList()
+      const last = kline[kline.length - 1]
+      const lastBar: BarArr | null = last && last.timestamp ? [
+        last.timestamp, last.open, last.high, last.low, last.close, last.volume ?? 0
+      ] : null
+      const ohlcvArr = build_ohlcvs(result.bars, result.secs * 1000, tf_msecs, lastBar)
+      addChartBars(chartObj, ohlcvArr.map(row => {
+        return {
+          timestamp: row[0],
+          open: row[1],
+          high: row[2],
+          low: row[3],
+          close: row[4],
+          volume: row[5]
+        }
+      }))
+    })
+    // }
   }
 }
 
