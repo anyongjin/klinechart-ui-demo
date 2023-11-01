@@ -247,7 +247,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   while (!kdata.data.length && count < 10){
     // 未抓取到数据重试
     let new_stop = start_ms
-    start_ms = stop_ms - (stop_ms - start_ms)
+    start_ms -= (stop_ms - start_ms)
     stop_ms = new_stop
     kdata = await datafeed.getHistoryKLineData({
       symbol, period, from: start_ms, to: stop_ms, strategy
