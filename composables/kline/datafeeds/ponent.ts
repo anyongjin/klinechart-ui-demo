@@ -16,6 +16,7 @@ const day_secs = tf_to_secs('1d')
 const week_secs = tf_to_secs('1w')
 const mon_secs = tf_to_secs('1M')
 import {io, Socket} from "socket.io-client"
+import {Job} from "@vercel/nft/out/node-file-trace";
 
 function getPeriodSecs(period: string){
   if(period == '1M')return 2592000;
@@ -133,6 +134,7 @@ export default class PonentDatafeed implements Datafeed{
     }
     // 监听数据
     this._ws.on('bars', (data: any) => {
+      console.log(JSON.stringify(data))
       let {code, period, minutes} = data
       for(let row of minutes){
         row[0] = row[0] * 1000
