@@ -14,10 +14,11 @@
       <li v-for="symbol in show_list" :key="symbol.name" @click="clickSymbol(symbol)">
         <div>
           <img v-if="symbol.logo" :src="symbol.logo" />
-          <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}</span>
+          <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}  {{symbol.title}}</span>
         </div>
         {{symbol.exchange}}
       </li>
+      <li v-if="!show_list.length">结果为空，请输入，按回车键搜索</li>
     </List>
   </Modal>
 </template>
