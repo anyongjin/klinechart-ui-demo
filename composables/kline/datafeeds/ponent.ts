@@ -137,7 +137,7 @@ export default class PonentDatafeed implements Datafeed{
       let {code, period, minutes} = data
       for(let i = 0; i < minutes.length; i++){
         let row = minutes[i]
-        console.log(typeof row[0])
+        console.log(typeof row[0], row[0], row, row[0] * 1000)
         row[0] = row[0] * 1000
       }
       console.log('bars:', minutes, data)
