@@ -187,7 +187,7 @@ function initChart(chartObj: Chart){
     const [from] = adjustFromTo(klocal.period, to, batch_num.value)
     const bars = await loadKlineData(from, to)
     console.log(`load kline: last: ${last_ms.value} ${from}-${to} ${klocal.period.timeframe}`)
-    last_ms.value = Math.round(from / day_secs) * day_secs - 28801
+    last_ms.value = Math.floor(from / day_secs) * day_secs - 28801
     if(bars.length){
       console.log(`get: ${bars[0].timestamp} ${bars[bars.length - 1].timestamp} last: ${last_ms.value}`)
     }
