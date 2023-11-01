@@ -61,6 +61,19 @@ watch(() => store.pairs_loading, (loading) => {
   loadQueryInds()
 })
 
+if(process.client) {
+  window.addEventListener("message", function (event) {
+    console.log('receive msg in char:', event)
+    if(event.data.type !== 'symbol')return
+    const ticker = event.data.code
+    const mats = store.all_symbols.filter(
+        s => s.exchange == klocal.symbol.exchange && s.ticker == ticker)
+    if (mats.length > 0) {
+      klocal.setSymbol(mats[0])
+    }
+  });
+}
+
 </script>
 
 <style lang="scss">
