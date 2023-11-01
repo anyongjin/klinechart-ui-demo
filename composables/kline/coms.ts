@@ -261,11 +261,10 @@ export function useSymbols() {
     try {
       const res = await datafeed.searchSymbols(keyword)
       main.cur_symbols.splice(0, main.cur_symbols.length, ...res)
-      main.pairs_loading = false
     } catch (err) {
       main.pairs_error = JSON.stringify(err)
-      main.pairs_loading = false
     }
+    main.pairs_loading = false
   }
 
   return {loadSymbols, searchSymbols}

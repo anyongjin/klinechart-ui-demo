@@ -61,18 +61,19 @@ function clickSymbol(symbol: SymbolInfo){
 }
 
 watch(keyword, (new_val) => {
+  console.log('keytword change:', new_val, main.all_symbols.length)
   if(!new_val){
     show_list.splice(0, show_list.length, ...main.symbols)
     return
   }
   if(main.all_symbols.length) {
-    const search = keyword.value.toUpperCase()
+    const search = new_val.toUpperCase()
     const res = main.symbols.filter(s => s.ticker.includes(search))
     show_list.splice(0, show_list.length, ...res)
     return;
   }
   // 未加载全部币列表，请求搜索
-  searchSymbols(keyword.value).then(() => {
+  searchSymbols(new_val).then(() => {
     show_list.splice(0, show_list.length, ...main.symbols)
   })
 })
