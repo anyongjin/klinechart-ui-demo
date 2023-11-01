@@ -137,8 +137,9 @@ export default class PonentDatafeed implements Datafeed{
       let {code, period, minutes} = data
       let bars: BarArr[] = []
       for(let row of minutes) {
-        bars.push([row[0] * 1000, row[1], row[2], row[3], row[4], row[5]])
+        bars.push([parseInt(row[0]) * 1000, row[1], row[2], row[3], row[4], row[5]])
       }
+      console.log('bars:', bars, data)
       const first = bars[0] as BarArr
       if (last_bar && first[0] == last_bar[0]) {
         // 如果和上一个推送的bar时间戳相同，则认为是其更新，减去上一个的volume，避免调用方错误累加
