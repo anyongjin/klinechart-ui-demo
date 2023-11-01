@@ -124,7 +124,7 @@ async function loadKlineData(from: number, to: number, isNewData?: boolean){
   }
   else{
     const more = kdata.data.length > 0
-    main.chart?.applyMoreData(kdata.data, more)
+    main.chart?.applyMoreData(kdata.data, true)
   }
   main.klineLoaded += 1
   kdata.lays?.forEach(o => {
