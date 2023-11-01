@@ -134,6 +134,9 @@ export default class PonentDatafeed implements Datafeed{
     // 监听数据
     this._ws.on('bars', (data: any) => {
       let {code, period, minutes} = data
+      for(let row of minutes){
+        row[0] = row[0] * 1000
+      }
       const first = minutes[0] as BarArr
       if (last_bar && first[0] == last_bar[0]) {
         // 如果和上一个推送的bar时间戳相同，则认为是其更新，减去上一个的volume，避免调用方错误累加
