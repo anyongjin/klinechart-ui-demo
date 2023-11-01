@@ -40,7 +40,7 @@ export default class PonentDatafeed implements Datafeed{
     const bars = await (rsp.data || []).map((row: string) => {
       const arr = row.split(',')
       return {
-        timestamp: parseInt(arr[0]),
+        timestamp: parseInt(arr[0]) * 1000,
         open: parseFloat(arr[1]),
         high: parseFloat(arr[2]),
         low: parseFloat(arr[3]),
