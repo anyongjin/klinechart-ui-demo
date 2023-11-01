@@ -283,6 +283,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
         last.timestamp, last.open, last.high, last.low, last.close, last.volume ?? 0
       ] : null
       const ohlcvArr = build_ohlcvs(result.bars, result.secs * 1000, tf_msecs, lastBar)
+      console.log('afeter build:', ohlcvArr)
       addChartBars(chartObj, ohlcvArr.map(row => {
         return {
           timestamp: row[0],

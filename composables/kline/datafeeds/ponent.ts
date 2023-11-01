@@ -137,7 +137,7 @@ export default class PonentDatafeed implements Datafeed{
       let {code, period, minutes} = data
       let bars: BarArr[] = []
       for(let row of minutes) {
-        const time_ms = parseInt(row[0].toString()) * 1000
+        const time_ms = parseInt(String(row[0])) * 1000
         bars.push([time_ms, row[1], row[2], row[3], row[4], row[5]])
       }
       console.log('bars:', bars, data)
@@ -147,7 +147,10 @@ export default class PonentDatafeed implements Datafeed{
         first[5] -= last_bar[5]
       }
       last_bar = bars[bars.length - 1]
-      callback({bars, secs: getPeriodSecs(period)})
+      callback({
+        bars: JSON.parse(JSON.stringify(bars)),
+        secs: getPeriodSecs(period)
+      })
     })
   }
 
