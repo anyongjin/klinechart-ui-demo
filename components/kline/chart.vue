@@ -238,10 +238,24 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   main.loadingChart = true
   const chartObj: Chart = main.chart!;
   const strategy = route.query.strategy?.toString()
-  const kdata = await datafeed.getHistoryKLineData({
+  let klines: KLineData[] = []
+  let lays: any[] | undefined = []
+  let kdata = await datafeed.getHistoryKLineData({
     symbol, period, from: start_ms, to: stop_ms, strategy
   })
-  const klines = kdata.data
+  let count = 0
+  while (!kdata.data.length && count < 10){
+    // 未抓取到数据重试
+    let new_stop = start_ms
+    start_ms = stop_ms - (stop_ms - start_ms)
+    stop_ms = new_stop
+    kdata = await datafeed.getHistoryKLineData({
+      symbol, period, from: start_ms, to: stop_ms, strategy
+    })
+    count += 1
+  }
+  klines = kdata.data
+  lays = kdata.lays
   if (klines.length > 0) {
     const pricePrec = GetNumberDotOffset(Math.min(klines[0].low, klines[klines.length - 1].low)) + 3
     chartObj.setPriceVolumePrecision(pricePrec, 0)
@@ -249,7 +263,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   const hasMore = loadMore; // && klines.length > 0;
   chartObj.applyNewData(klines, hasMore)
   last_ms.value = 0  // 重置第一个时间戳
-  kdata.lays?.forEach(o => {
+  lays?.forEach(o => {
     drawBarRef.value?.addOverlay(o)
   })
   loading = false
