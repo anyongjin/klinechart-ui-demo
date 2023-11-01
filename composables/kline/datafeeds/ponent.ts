@@ -4,6 +4,9 @@ import {getDefaults} from "~/config";
 import {useKlineStore} from "#imports";
 const defaults = getDefaults()
 const data_url = defaults.data_url
+const day_secs = tf_to_secs('1d')
+const week_secs = tf_to_secs('1w')
+const mon_secs = tf_to_secs('1M')
 
 /**
  * ponentsoft的数据源
@@ -12,10 +15,8 @@ const data_url = defaults.data_url
 export default class PonentDatafeed implements Datafeed{
 
   /**
-   * coins/{id}/ohlc  免费用户最小30m间隔，无历史数据
-   * 1 - 2 days: 30 minutes
-   * 3 - 30 days: 4 hours
-   * 31 days and beyond: 4 days
+   * 传入的时间戳服务器端会转换为日期格式，没有严格使用时间戳，所以这里应确保取日期的开始结束时间戳
+   * period: 1，5，10，15，30，60，120，1D， 1W， 1M
    * @param symbol
    * @param period
    * @param from
@@ -23,10 +24,20 @@ export default class PonentDatafeed implements Datafeed{
    */
   async getHistoryKLineData({symbol, period, from, to, strategy}: GetKlineArgs): Promise<KData> {
     const url = `${data_url}/app/bars`
-    const fromts = Math.round(from / 1000)
-    const tots = Math.round(to / 1000)
-    const mins = Math.round(period.secs / 60)
-    const data = {"code":symbol.ticker ,fromts, tots,"count":1000,"period":mins}
+    let fromts = Math.round(from / 1000)
+    let tots = Math.round(to / 1000)
+    tots = Math.round(tots / day_secs) * day_secs - 1
+    let period_val = Math.round(period.secs / 60).toString()
+    if(period.secs >= mon_secs){
+      period_val = '1M'
+    }
+    else if(period.secs >= week_secs){
+      period_val = '1W'
+    }
+    else if(period.secs >= day_secs){
+      period_val = '1D'
+    }
+    const data = {"code":symbol.ticker ,fromts, tots,"count":1000,"period": period_val}
     const rsp = await $fetch(url, {
       method: 'POST',
       body: data,
