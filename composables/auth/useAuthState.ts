@@ -30,7 +30,7 @@ export const getAuthConfig = (): DeepRequired<AuthProvider> => {
 export const useAuthState = (): UseAuthStateReturn => {
   const authConfig = getAuthConfig()
   // Re-construct state from cookie, also setup a cross-component sync via a useState hack, see https://github.com/nuxt/nuxt/issues/13020#issuecomment-1397282717
-  const _rawTokenCookie = useCookie<string | null>('auth:token', {
+  const _rawTokenCookie = useCookie<string | null>('authtoken', {
     default: () => null, maxAge: authConfig.token.maxAgeInSeconds, sameSite: 'lax' })
 
   const authToken = useState('auth:raw-token', () => _rawTokenCookie.value)
@@ -52,7 +52,7 @@ export const useAuthState = (): UseAuthStateReturn => {
     if (authDoing.value) {
       return 0
     }
-    return authData.value && authToken.value ? 1: -1
+    return authToken.value ? 1: -1
   })
 
   return {

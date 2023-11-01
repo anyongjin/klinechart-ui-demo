@@ -79,9 +79,9 @@
     </div>
     <div class="right-area">
       <client-only>
-        <div class='item tools' v-if="authStatus > 0">个人信息</div>
-        <div class="item tools" v-else @click="clickLogin">
-          <span>{{$t('login')}}</span>
+        <div class="item tools" @click="clickProfile">
+          <span v-if="authStatus > 0">个人信息</span>
+          <span v-else>{{$t('login')}}</span>
         </div>
       </client-only>
       <div class='item tools'>
@@ -157,8 +157,12 @@
     }, {immediate: true})
   })
 
-  function clickLogin(){
-    window.location.href = '/login'
+  function clickProfile() {
+    if (authStatus.value <= 0) {
+      window.location.href = '/signin'
+    } else {
+      window.parent.postMessage('showProfile')
+    }
   }
 
   function exitLogin(){
