@@ -40,6 +40,7 @@ const defaults = getDefaults()
 
 overlays.forEach(o => { kc.registerOverlay(o) })
 figures.forEach(o => { kc.registerFigure(o) })
+const day_secs = tf_to_secs('1d')
 
 interface ChartProp{
   hasRight?: boolean,
@@ -180,10 +181,10 @@ function initChart(chartObj: Chart){
   chartObj.setStyles(styles as Styles)
 
   chartObj.loadMore(timestamp => {
-    const end_ms = last_ms.value ? last_ms.value : timestamp!;
+    const end_ms = last_ms.value ? Math.min(last_ms.value, timestamp!) : timestamp!;
     const [to] = adjustFromTo(klocal.period, end_ms, 1)
     const [from] = adjustFromTo(klocal.period, to, batch_num.value)
-    last_ms.value = from
+    //last_ms.value = Math.round(from / day_secs) * day_secs - 28801
     loadKlineData(from, to)
   })
 
