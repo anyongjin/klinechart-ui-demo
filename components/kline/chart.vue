@@ -58,6 +58,7 @@ const {authDoing, authStatus} = useAuthState()
 const chartRef = ref<HTMLElement>()
 const drawBarRef = ref<any>(null)
 const batch_num = ref(500)
+const last_ms = ref(0)  // 上一次请求的时间戳，在loadmore时，应使用此时间戳，而非第一个bar
 const {$on} = useNuxtApp()
 let priceUnitDom: HTMLElement
 let loading = false
@@ -179,8 +180,10 @@ function initChart(chartObj: Chart){
   chartObj.setStyles(styles as Styles)
 
   chartObj.loadMore(timestamp => {
-    const [to] = adjustFromTo(klocal.period, timestamp!, 1)
+    const end_ms = last_ms.value ? last_ms.value : timestamp!;
+    const [to] = adjustFromTo(klocal.period, end_ms, 1)
     const [from] = adjustFromTo(klocal.period, to, batch_num.value)
+    last_ms.value = from
     loadKlineData(from, to)
   })
 
@@ -239,6 +242,7 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   }
   const hasMore = loadMore && klines.length > 0;
   chartObj.applyNewData(klines, hasMore)
+  last_ms.value = 0  // 重置第一个时间戳
   kdata.lays?.forEach(o => {
     drawBarRef.value?.addOverlay(o)
   })
