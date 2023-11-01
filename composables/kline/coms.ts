@@ -263,6 +263,7 @@ export function useSymbols() {
       main.cur_symbols.splice(0, main.cur_symbols.length, ...res)
     } catch (err) {
       main.pairs_error = JSON.stringify(err)
+      console.log('fetch symbols, fail:', err)
     }
     main.pairs_loading = false
   }
