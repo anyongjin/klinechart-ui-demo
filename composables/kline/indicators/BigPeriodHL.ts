@@ -32,37 +32,46 @@ const bigPeriodHL: IndicatorTemplate = {
     }
     const bigs = rsp.data
     const result: Record<string, number>[] = []
-    let min_ts = dataList[dataList.length - 1].timestamp
-    for (const big of bigs) {
-      const start = big.timestamp + tf_msecs
-      const stop = start + tf_msecs
-      const cur_bars = dataList.filter(v => v.timestamp >= start && v.timestamp < stop)
-      const num = cur_bars.length
-      if (!num) continue
-      if (cur_bars[0].timestamp < min_ts) {
-        min_ts = cur_bars[0].timestamp
-      }
-      const range = big.high - big.low
-      const item = {
-        o: big.open,
-        h: big.high,
-        l: big.low,
-        c: big.close,
-        m: (big.open + big.close) / 2,
-        f0ch: big.high - range,
-        f1ch: big.high + range,
-        f0cl: big.low + range,
-        f1cl: big.low - range
-      }
-      result.push(...Array(num).fill(item))
+    let bigid = 0;
+    let big = bigs[bigid]
+    let big_from = big.timestamp + tf_msecs // 此大周期对应bar的开始时间戳
+    let big_to = big_from + tf_msecs  // 此大周期对应bar的结束时间戳
+    let range = big.high - big.low
+    let big_item = {
+      o: big.open,
+      h: big.high,
+      l: big.low,
+      c: big.close,
+      m: (big.open + big.close) / 2,
+      f0ch: big.high - range,
+      f1ch: big.high + range,
+      f0cl: big.low + range,
+      f1cl: big.low - range
     }
-    let ins_num = 0;
-    for (const bar of dataList) {
-      if (bar.timestamp >= min_ts) break
-      ins_num += 1
-    }
-    if (ins_num > 0) {
-      result.splice(0, 0, ...Array(ins_num).fill({}))
+    for(let bar of dataList){
+      while(bar.timestamp >= big_to){
+        bigid += 1;
+        if(bigs.length <= bigid){
+          // 没有大周期了，直接返回
+          return result
+        }
+        big = bigs[bigid]
+        big_from = big.timestamp + tf_msecs // 此大周期对应bar的开始时间戳
+        big_to = big_from + tf_msecs  // 此大周期对应bar的结束时间戳
+        range = big.high - big.low
+        big_item = {
+          o: big.open,
+          h: big.high,
+          l: big.low,
+          c: big.close,
+          m: (big.open + big.close) / 2,
+          f0ch: big.high - range,
+          f1ch: big.high + range,
+          f0cl: big.low + range,
+          f1cl: big.low - range
+        }
+      }
+      result.push(big_item)
     }
     return result
   }
