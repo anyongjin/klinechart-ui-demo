@@ -61,7 +61,8 @@ watch(() => store.pairs_loading, (loading) => {
   loadQueryInds()
 })
 
-watch(() => klocal.symbol, (symbol) => {
+watch(() => klocal.symbol.ticker, () => {
+  const symbol = klocal.symbol
   if(!symbol || !symbol.ticker || !process.client)return
   window.parent.postMessage({type: 'doc_title', data: `${symbol.title}(${symbol.ticker}) - Kanpan`})
 }, {immediate: true})
