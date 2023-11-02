@@ -65,10 +65,11 @@ if(process.client) {
   window.addEventListener("message", async (event) => {
     console.log('receive msg in char:', event)
     if (event.data.type !== 'symbol') return
-    const ticker = event.data.code
     const mats = await searchSymbols(event.data.code)
     if (mats.length > 0) {
       klocal.setSymbol(mats[0])
+    } else {
+      console.log('no match symbols')
     }
   });
 }

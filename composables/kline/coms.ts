@@ -255,18 +255,22 @@ export function useSymbols() {
   }
 
   async function searchSymbols(keyword: string) {
-    if (main.pairs_loading) return []
+    if (main.pairs_loading) {
+      console.log('pairs_loading, skip search symbols')
+      return []
+    }
     main.pairs_loading = true
     main.pairs_error = ''
+    let res_list: SymbolInfo[] = []
     try {
-      const res = await datafeed.searchSymbols(keyword)
-      main.cur_symbols.splice(0, main.cur_symbols.length, ...res)
+      res_list = await datafeed.searchSymbols(keyword)
+      main.cur_symbols.splice(0, main.cur_symbols.length, ...res_list)
     } catch (err) {
       main.pairs_error = JSON.stringify(err)
       console.log('fetch symbols, fail:', err)
     }
     main.pairs_loading = false
-    return main.cur_symbols
+    return res_list
   }
 
   return {loadSymbols, searchSymbols}

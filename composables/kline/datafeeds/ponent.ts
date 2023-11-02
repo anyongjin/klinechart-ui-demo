@@ -98,11 +98,11 @@ export default class PonentDatafeed implements Datafeed{
 
   async searchSymbols (keyword: string): Promise<SymbolInfo[]> {
     const url = `${data_url}/app/search`
-    const headers: Record<string, any> = {'Authorization': defaults.data_token}
     const data = {value: keyword, exchange: ""}
     const rsp = await $fetch(url, {
       method: 'POST',
-      body: data, headers
+      body: data,
+      headers: {'Authorization': defaults.data_token}
     })
     if (rsp.status != 'ok') {
       throw new Error(JSON.stringify(rsp))
