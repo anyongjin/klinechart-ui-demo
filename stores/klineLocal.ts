@@ -44,10 +44,15 @@ const defStyle = {
         }
     },
     indicator: {
-        bars: {
+        bars: [{
+            style: 'fill',
+            borderStyle: 'solid',
+            borderSize: 1,
+            borderDashedValue: [2, 2],
             upColor: red,
-            downColor: green
-        },
+            downColor: green,
+            noChangeColor: '#888888'
+        }],
         ohlc: {
             upColor: alphaRed,
             downColor: alphaGreen
