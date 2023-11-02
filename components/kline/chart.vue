@@ -186,11 +186,11 @@ function initChart(chartObj: Chart){
     const [to] = adjustFromTo(klocal.period, end_ms, 1)
     const [from] = adjustFromTo(klocal.period, to, batch_num.value)
     const bars = await loadKlineData(from, to)
-    //console.log(`load kline: last: ${last_ms.value} ${from}-${to} ${klocal.period.timeframe}`)
-    last_ms.value = Math.floor(from / day_secs) * day_secs - 28801
-    // if(bars.length){
-    //   console.log(`get: ${bars[0].timestamp} ${bars[bars.length - 1].timestamp} last: ${last_ms.value}`)
-    // }
+    console.log(`load kline: last: ${last_ms.value} ${from}-${to} ${klocal.period.timeframe}`)
+    last_ms.value = (Math.floor(from / 1000 / day_secs) * day_secs - 28801) * 1000
+    if(bars.length){
+      console.log(`get: ${bars[0].timestamp} ${bars[bars.length - 1].timestamp} last: ${last_ms.value}`)
+    }
   })
 
   chartObj.subscribeAction(ActionType.OnTooltipIconClick, data => {
