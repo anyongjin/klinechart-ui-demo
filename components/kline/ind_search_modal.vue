@@ -45,6 +45,7 @@ import {useI18n} from "vue-i18n";
 const {t} = useI18n()
 import {TakeawayBox, Cloudy} from "@element-plus/icons-vue";
 import {useKlineStore} from "~/stores/kline";
+import {useAuthState} from "~/composables/auth";
 
 
 const props = defineProps<{
@@ -68,6 +69,7 @@ const showModal = computed({
 const {$emit} = useNuxtApp()
 const store = useKlineLocal()
 const main = useKlineStore()
+const {authStatus} = useAuthState()
 
 const keyword = ref('')
 const activeTab = ref('local')
@@ -87,7 +89,11 @@ const checked_inds = computed((): string[] => {
   return store.save_inds.map(d => d.name)
 })
 
-function toggleInd(is_main: boolean, name: string, val: any){
+function toggleInd(is_main: boolean, name: string, val: any) {
+  if (activeTab.value == 'cloud' && authStatus.value < 1) {
+    ElMessage.warning({message: '请登录后再使用云端指标哦'})
+    return
+  }
   $emit('set_ind', {is_main, ind_name: name, is_add: val as boolean})
 }
 

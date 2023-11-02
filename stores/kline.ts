@@ -33,10 +33,11 @@ export const useKlineStore = defineStore('kline', () => {
   const color_short = ref('red')
   const color_long = ref('green')
 
-  const local_mains = ['MA', 'EMA', 'SMA', 'BOLL', 'SAR', 'BBI', 'BigPeriodHL']
+  const local_mains = ['MA', 'EMA', 'SMA', 'BOLL', 'SAR', 'BBI']
   const local_subs = ['VOL', 'MACD', 'KDJ', 'RSI', 'BIAS', 'BRAR',
     'CCI', 'DMI', 'CR', 'PSY', 'DMA', 'TRIX', 'OBV', 'VR', 'WR', 'MTM', 'EMV',
     'SAR', 'ROC', 'PVT', 'AO']
+  const cloud_mains = ['BigPeriodHL']
 
   const exchange = ref('SH')
 
@@ -47,6 +48,9 @@ export const useKlineStore = defineStore('kline', () => {
   }
   for(let name of local_subs){
     all_inds.push({name, title: name.toLowerCase(), cloud: false, is_main: false})
+  }
+  for(let name of cloud_mains){
+    all_inds.push({name, title: name.toLowerCase(), cloud: true, is_main: true})
   }
 
   function setCurSymbols(pairs: string[]){

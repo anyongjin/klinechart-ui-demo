@@ -65,7 +65,7 @@
   "roc": "ROC(变动率指标)",
   "pvt": "PVT(价量趋势指标)",
   "ao": "AO(动量震荡指标)",
-  "bigperiodhl": "BigPeriodHL(周支撑压力)",
+  "bigperiodhl": "BigPeriodHL(月支撑压力)",
 
   "utc": "世界统一时间",
   "honolulu": "(UTC-10) 檀香山",
