@@ -79,15 +79,15 @@
     </div>
     <div class="right-area" v-if="!is_small">
       <client-only>
-        <div class="item tools" @click="clickProfile">
+        <div class="item tools" @click="clickProfile" v-if="!is_small && authStatus <= 0">
           <span v-if="authStatus > 0">个人信息</span>
           <span v-else>{{$t('login')}}</span>
         </div>
       </client-only>
-      <div class='item tools'>
+      <div class='item tools' v-if="!is_small">
         <el-link href="/disclaimer" target="_blank">免责声明</el-link>
       </div>
-      <div class="item tools big120" v-if="hasRight">
+      <div class="item tools big120" v-if="hasRight && !is_small">
         <svg
           :class="{rotate: klocal.showRight}"
           viewBox="0 0 1024 1024"

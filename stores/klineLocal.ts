@@ -61,6 +61,7 @@ const defStyle = {
             show: false
         },
         tooltip:{
+            showRule: 'none',
             showName: false,
             showParams: false
         }
