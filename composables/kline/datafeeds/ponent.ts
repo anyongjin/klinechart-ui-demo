@@ -28,7 +28,7 @@ function getPeriodSecs(period: string){
 function getPeriodText(period: Period){
   let period_val = Math.round(period.secs / 60).toString()
   if(period.secs >= mon_secs){
-    period_val = '1M'
+    period_val = `${Math.round(period.secs / mon_secs)}M`
   }
   else if(period.secs >= week_secs){
     period_val = '1W'
