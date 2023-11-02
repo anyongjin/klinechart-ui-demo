@@ -179,7 +179,7 @@ function initChart(chartObj: Chart){
   const styles = toRaw(klocal.chartStyle)
   _.merge(styles, getDefStyles(t))
   _.merge(styles, getThemeStyles(klocal.theme))
-  chartObj.setStyles(styles as Styles)
+  chartObj.setStyles(styles as unknown as Styles)
 
   chartObj.loadMore(async (timestamp) => {
     const end_ms = last_ms.value ? Math.min(last_ms.value, timestamp!) : timestamp!;

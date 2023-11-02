@@ -44,6 +44,10 @@ const defStyle = {
         }
     },
     indicator: {
+        bars: {
+            upColor: red,
+            downColor: green
+        },
         ohlc: {
             upColor: alphaRed,
             downColor: alphaGreen
