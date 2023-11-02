@@ -61,14 +61,13 @@ watch(() => store.pairs_loading, (loading) => {
   loadQueryInds()
 })
 
-watch(klocal.symbol, (symbol) => {
+watch(() => klocal.symbol, (symbol) => {
   if(!symbol || !symbol.ticker || !process.client)return
   document.title = `${symbol.title}(${symbol.ticker}) - Kanpan`
-})
+}, {immediate: true})
 
 if(process.client) {
   window.addEventListener("message", async (event) => {
-    console.log('receive msg in char:', event)
     if (event.data.type !== 'symbol') return
     let ticker = event.data.code
     ticker = ticker.split('.')[0]
