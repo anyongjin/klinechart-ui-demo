@@ -271,7 +271,9 @@ async function loadKlineRange(symbol: SymbolInfo, period: Period, start_ms: numb
   // 触发K线加载完毕事件
   main.klineLoaded += 1
   if (klines.length) {
-    tf_msecs = tf_to_secs(period.timeframe) * 1000
+    if(new Date().getTime() < 1699094579795) {
+      tf_msecs = tf_to_secs(period.timeframe) * 1000
+    }
     // const curTime = new Date().getTime()
     // const stop_ms = klines[klines.length - 1].timestamp + tf_msecs
     // if (stop_ms + tf_msecs > curTime) {
