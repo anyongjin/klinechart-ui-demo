@@ -255,7 +255,7 @@ export function useSymbols() {
   }
 
   async function searchSymbols(keyword: string) {
-    if (main.pairs_loading) return
+    if (main.pairs_loading) return []
     main.pairs_loading = true
     main.pairs_error = ''
     try {
@@ -266,6 +266,7 @@ export function useSymbols() {
       console.log('fetch symbols, fail:', err)
     }
     main.pairs_loading = false
+    return main.cur_symbols
   }
 
   return {loadSymbols, searchSymbols}

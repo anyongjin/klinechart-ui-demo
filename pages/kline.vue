@@ -1,5 +1,5 @@
 <template>
-  <KlineChart :has-right="false"/>
+  <KlineChart :has-right="true"/>
 </template>
 
 <script setup lang="ts">
@@ -11,7 +11,7 @@ const {exg, symbol, period, ind} = useRoute().query
 
 const klocal = useKlineLocal()
 const store = useKlineStore()
-const {loadSymbols} = useSymbols()
+const {loadSymbols, searchSymbols} = useSymbols()
 const queryLoaded = ref(false)
 
 
@@ -62,12 +62,11 @@ watch(() => store.pairs_loading, (loading) => {
 })
 
 if(process.client) {
-  window.addEventListener("message", function (event) {
+  window.addEventListener("message", async (event) => {
     console.log('receive msg in char:', event)
-    if(event.data.type !== 'symbol')return
+    if (event.data.type !== 'symbol') return
     const ticker = event.data.code
-    const mats = store.all_symbols.filter(
-        s => s.exchange == klocal.symbol.exchange && s.ticker == ticker)
+    const mats = await searchSymbols(event.data.code)
     if (mats.length > 0) {
       klocal.setSymbol(mats[0])
     }

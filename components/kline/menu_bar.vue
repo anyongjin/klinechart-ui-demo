@@ -91,7 +91,7 @@
         <svg
           :class="{rotate: klocal.showRight}"
           viewBox="0 0 1024 1024"
-          @click="klocal.showRight = !klocal.showRight">
+          @click="toggleRight">
           <path d="M192.037 287.953h640.124c17.673 0 32-14.327 32-32s-14.327-32-32-32H192.037c-17.673 0-32 14.327-32 32s14.327 32 32 32zM832.161 479.169H438.553c-17.673 0-32 14.327-32 32s14.327 32 32 32h393.608c17.673 0 32-14.327 32-32s-14.327-32-32-32zM832.161 735.802H192.037c-17.673 0-32 14.327-32 32s14.327 32 32 32h640.124c17.673 0 32-14.327 32-32s-14.327-32-32-32zM319.028 351.594l-160 160 160 160z"/>
         </svg>
       </div>
@@ -163,6 +163,11 @@
     } else {
       window.parent.postMessage('showProfile')
     }
+  }
+
+  function toggleRight(){
+    klocal.showRight = !klocal.showRight
+    window.parent.postMessage('toggleSide')
   }
 
   function exitLogin(){
