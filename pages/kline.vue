@@ -63,7 +63,7 @@ watch(() => store.pairs_loading, (loading) => {
 
 watch(() => klocal.symbol, (symbol) => {
   if(!symbol || !symbol.ticker || !process.client)return
-  document.title = `${symbol.title}(${symbol.ticker}) - Kanpan`
+  window.parent.postMessage({type: 'doc_title', data: `${symbol.title}(${symbol.ticker}) - Kanpan`})
 }, {immediate: true})
 
 if(process.client) {
