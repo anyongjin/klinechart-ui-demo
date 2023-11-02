@@ -7,22 +7,47 @@ import {getDefaults} from "~/config";
 import {makePeriod, useSymbols} from "~/composables/kline/coms";
 
 const defaults = getDefaults();
+
+const red = '#F92855'
+const green = '#2DC08E'
+
+const alphaRed = 'rgba(249, 40, 85, .7)'
+const alphaGreen = 'rgba(45, 192, 142, .7)'
+
 const defStyle = {
     candle: {
         type: 'candle_solid',
+        bar: {
+            upColor: red,
+            downColor: green,
+            upBorderColor: red,
+            downBorderColor: green,
+            upWickColor: red,
+            downWickColor: green
+        },
         priceMark: {
             last:{
-                show: true
+                show: true,
+                upColor: red,
+                downColor: green
             },
             high:{
-                show: true
+                show: true,
+                upColor: red,
+                downColor: green
             },
             low: {
-                show: true
+                show: true,
+                upColor: red,
+                downColor: green
             }
         }
     },
     indicator: {
+        ohlc: {
+            upColor: alphaRed,
+            downColor: alphaGreen
+        },
         lastValueMark: {
             show: false
         }
@@ -32,7 +57,7 @@ const defStyle = {
         reverse: false
     },
     grid: {
-        show: true
+        show: false
     }
 }
 

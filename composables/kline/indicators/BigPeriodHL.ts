@@ -17,7 +17,7 @@ const bigPeriodHL: IndicatorTemplate = {
     {key: 'f1cl', title: 'f1cl：', type: 'line'},
   ],
   calc: async (dataList, {name, calcParams, extendData}) => {
-    if(!dataList.length)return []
+    if (!dataList.length) return []
     const feed = extendData as Datafeed;
     const klocal = useKlineLocal()
     const symbol = klocal.symbol
@@ -26,17 +26,22 @@ const bigPeriodHL: IndicatorTemplate = {
     const tf_msecs = period.secs * 1000
     const from = dataList[0].timestamp - tf_msecs * 3
     const rsp = await feed.getHistoryKLineData({symbol, period, from, to})
-    if(!rsp || !rsp.data || !rsp.data.length){
+    if (!rsp || !rsp.data || !rsp.data.length) {
       console.error('request kline fail:', symbol.ticker, period.timeframe, from, to, rsp)
       return []
     }
     const bigs = rsp.data
     const result: Record<string, number>[] = []
-    for(const big of bigs){
+    let min_ts = dataList[dataList.length - 1].timestamp
+    for (const big of bigs) {
       const start = big.timestamp + tf_msecs
       const stop = start + tf_msecs
-      const num = dataList.filter(v => v.timestamp >= start && v.timestamp < stop).length
-      if(!num)continue
+      const cur_bars = dataList.filter(v => v.timestamp >= start && v.timestamp < stop)
+      const num = cur_bars.length
+      if (!num) continue
+      if (cur_bars[0].timestamp < min_ts) {
+        min_ts = cur_bars[0].timestamp
+      }
       const range = big.high - big.low
       const item = {
         o: big.open,
@@ -50,6 +55,14 @@ const bigPeriodHL: IndicatorTemplate = {
         f1cl: big.low - range
       }
       result.push(...Array(num).fill(item))
+    }
+    let ins_num = 0;
+    for (const bar of dataList) {
+      if (bar.timestamp >= min_ts) break
+      ins_num += 1
+    }
+    if (ins_num > 0) {
+      result.splice(0, 0, ...Array(ins_num).fill({}))
     }
     return result
   }
