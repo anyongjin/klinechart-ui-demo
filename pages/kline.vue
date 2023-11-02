@@ -61,11 +61,18 @@ watch(() => store.pairs_loading, (loading) => {
   loadQueryInds()
 })
 
+watch(klocal.symbol, (symbol) => {
+  if(!symbol || !symbol.ticker || !process.client)return
+  document.title = `${symbol.title}(${symbol.ticker}) - Kanpan`
+})
+
 if(process.client) {
   window.addEventListener("message", async (event) => {
     console.log('receive msg in char:', event)
     if (event.data.type !== 'symbol') return
-    const mats = await searchSymbols(event.data.code)
+    let ticker = event.data.code
+    ticker = ticker.split('.')[0]
+    const mats = await searchSymbols(ticker)
     if (mats.length > 0) {
       klocal.setSymbol(mats[0])
     } else {
