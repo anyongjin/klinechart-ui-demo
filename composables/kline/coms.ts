@@ -32,7 +32,9 @@ export function makePeriod(timeframe: string): Period {
   const num = timeframe.substring(0, sep_id);
   const num_val = parseInt(num);
   let timespan = 'minute';
-  if (unit == 'w') {
+  if (unit == 'M') {
+    timespan = 'month'
+  } else if (unit == 'w') {
     timespan = 'week'
   } else if (unit == 'd') {
     timespan = 'day'
