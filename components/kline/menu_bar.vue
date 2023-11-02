@@ -159,7 +159,7 @@
 
   function clickProfile() {
     if (authStatus.value <= 0) {
-      window.location.href = '/signin'
+      window.parent.postMessage('login')
     } else {
       window.parent.postMessage('showProfile')
     }
