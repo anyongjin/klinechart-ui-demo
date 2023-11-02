@@ -59,6 +59,10 @@ const defStyle = {
         },
         lastValueMark: {
             show: false
+        },
+        tooltip:{
+            showName: false,
+            showParams: false
         }
     },
     yAxis: {

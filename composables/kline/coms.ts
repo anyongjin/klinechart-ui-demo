@@ -58,6 +58,7 @@ export const AllPeriods: Period[] = [
   makePeriod('1m'),
   makePeriod('5m'),
   makePeriod('15m'),
+  makePeriod('30m'),
   makePeriod('1h'),
   makePeriod('2h'),
   makePeriod('4h'),
