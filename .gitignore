@@ -1,5 +1,6 @@
 # Nuxt dev/build outputs
 .output
+.output.zip
 .data
 .nuxt
 .nitro

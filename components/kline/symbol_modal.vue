@@ -14,10 +14,10 @@
       <li v-for="symbol in show_list" :key="symbol.name" @click="clickSymbol(symbol)">
         <div>
           <img v-if="symbol.logo" :src="symbol.logo" />
-          <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}  {{symbol.title}}</span>
+          <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}    {{symbol.title}}</span>
         </div>
         <span class="exg">{{symbol.exchange}}</span>
-        <el-icon class="symbol-icon" title="添加自选" size="24px" @click="clickAddCare(symbol)"><Plus/></el-icon>
+        <el-icon class="symbol-icon" title="添加自选" size="20px" @click.stop="clickAddCare(symbol)"><Plus/></el-icon>
       </li>
       <li v-if="!show_list.length">结果为空，请输入，按回车键搜索</li>
     </List>
@@ -35,7 +35,7 @@ import {useKlineLocal} from "~/stores/klineLocal";
 import {useKlineStore} from "#imports";
 import {Plus} from "@element-plus/icons-vue";
 import {getDefaults} from "~/config";
-import {$fetch} from "ofetch/dist/node";
+import {$fetch} from "ofetch";
 import {useAuthState} from "~/composables/auth";
 
 const props = defineProps<{
@@ -86,6 +86,7 @@ async function clickAddCare(symbol: SymbolInfo){
     ElMessage.warning({message})
     return
   }
+  ElMessage.success({message: '添加成功'})
   window.parent.postMessage('refreshList')
 }
 
