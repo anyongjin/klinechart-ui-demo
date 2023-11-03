@@ -16,7 +16,8 @@
           <img v-if="symbol.logo" :src="symbol.logo" />
           <span :title="symbol.name">{{symbol.shortName ?? symbol.ticker}}  {{symbol.title}}</span>
         </div>
-        {{symbol.exchange}}
+        <span class="exg">{{symbol.exchange}}</span>
+        <el-icon class="symbol-icon" title="添加自选" size="24px" @click="clickAddCare(symbol)"><Plus/></el-icon>
       </li>
       <li v-if="!show_list.length">结果为空，请输入，按回车键搜索</li>
     </List>
@@ -32,6 +33,10 @@ import {type SymbolInfo} from "~/composables/types";
 import {useSymbols} from "~/composables/kline/coms"
 import {useKlineLocal} from "~/stores/klineLocal";
 import {useKlineStore} from "#imports";
+import {Plus} from "@element-plus/icons-vue";
+import {getDefaults} from "~/config";
+import {$fetch} from "ofetch/dist/node";
+import {useAuthState} from "~/composables/auth";
 
 const props = defineProps<{
   modelValue: boolean
@@ -42,6 +47,8 @@ const main = useKlineStore()
 const store = useKlineLocal()
 const {searchSymbols} = useSymbols()
 const show_list = reactive<SymbolInfo[]>([])
+const defaults = getDefaults()
+const {authStatus} = useAuthState()
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -59,6 +66,27 @@ const showModal = computed({
 function clickSymbol(symbol: SymbolInfo){
   showModal.value = false;
   store.setSymbol(symbol)
+}
+
+async function clickAddCare(symbol: SymbolInfo){
+  if(authStatus.value < 1){
+    ElMessage.warning({message: '请登录后再添加自选哦'})
+    return
+  }
+  const url = `/watchlist/follow`
+  const rsp = await $fetch(url, {
+    method: 'POST',
+    body: {
+      "name": "我的列表",
+      "codes": [symbol.ticker]
+    }
+  })
+  if(rsp.status != 'ok'){
+    let message = `错误：${JSON.stringify(rsp)}`
+    ElMessage.warning({message})
+    return
+  }
+  window.parent.postMessage('refreshList')
 }
 
 watch(keyword, (new_val) => {
@@ -103,10 +131,15 @@ watch(keyword, (new_val) => {
   margin-right: -20px;
   li {
     justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     div {
       display: flex;
       flex-direction: row;
       align-items: center;
+      flex-grow: 1;
       img {
         width: 16px;
         height: 16px;
@@ -118,6 +151,12 @@ watch(keyword, (new_val) => {
         white-space: nowrap;
         text-overflow: ellipsis;
       }
+    }
+    .exg{
+      margin: 0 15px;
+    }
+    .symbol-icon{
+      margin: 0 10px;
     }
   }
 }

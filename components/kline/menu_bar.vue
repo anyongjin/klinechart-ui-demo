@@ -77,9 +77,9 @@
     <div class='item tools big120' @click="toggleTheme" v-if="!is_small">
       <Icon name="theme"/>
     </div>
-    <div class="right-area" v-if="!is_small">
+    <div class="right-area">
       <client-only>
-        <div class="item tools" @click="clickProfile" v-if="!is_small && authStatus <= 0">
+        <div class="item tools" @click="clickProfile" v-if="is_small && authStatus <= 0 || !is_small">
           <span v-if="authStatus > 0">个人信息</span>
           <span v-else>{{$t('login')}}</span>
         </div>

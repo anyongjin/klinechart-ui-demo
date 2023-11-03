@@ -9,14 +9,12 @@ import {
   type BarArr
 } from "~/composables/types";
 import {getDefaults} from "~/config";
-import {useKlineStore} from "#imports";
 const defaults = getDefaults()
 const data_url = defaults.data_url
 const day_secs = tf_to_secs('1d')
 const week_secs = tf_to_secs('1w')
 const mon_secs = tf_to_secs('1M')
 import {io, Socket} from "socket.io-client"
-import {Job} from "@vercel/nft/out/node-file-trace";
 
 function getPeriodSecs(period: string){
   if(period == '1M')return 2592000;

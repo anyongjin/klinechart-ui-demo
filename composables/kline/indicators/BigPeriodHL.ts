@@ -8,13 +8,13 @@ const bigPeriodHL: IndicatorTemplate = {
   name: 'BigPeriodHL',
   extendData: 'datafeed',
   figures: [
-    {key: 'o', title: '多空分界：', type: 'line'},
-    {key: 'c', title: '收盘价：', type: 'line'},
-    //{key: 'm', title: '生命线：', type: 'line'},
-    {key: 'f0ch', title: 'f0ch：', type: 'line'},
-    {key: 'f1ch', title: 'f1ch：', type: 'line'},
-    {key: 'f0cl', title: 'f0cl：', type: 'line'},
-    {key: 'f1cl', title: 'f1cl：', type: 'line'},
+    {key: 'o', title: '开盘：', type: 'line'},
+    {key: 'c', title: '收盘：', type: 'line'},
+    // {key: 'm', title: '生命线：', type: 'line'},
+    // {key: 'f0ch', title: 'f0ch：', type: 'line'},
+    // {key: 'f1ch', title: 'f1ch：', type: 'line'},
+    // {key: 'f0cl', title: 'f0cl：', type: 'line'},
+    // {key: 'f1cl', title: 'f1cl：', type: 'line'},
   ],
   calc: async (dataList, {name, calcParams, extendData}) => {
     if (!dataList.length) return []
