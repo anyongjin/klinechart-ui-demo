@@ -12,6 +12,10 @@ export const formatBigNumber = kc.utils.formatBigNumber
 const TooltipIconPosition = kc.TooltipIconPosition
 
 const _periods: Record<string, Period> = {}
+// 有些周期需要对齐到指定的日期，下面应该按tfsecs从大到小排序
+const tfsecs_origins = [
+  {tfsecs: 604800, origin: 345600, date: '1970-01-05'},  // 周级别，从1970-01-05星期一开始
+]
 
 
 export function GetNumberDotOffset(value: number){
@@ -200,9 +204,40 @@ export function getThemeStyles(theme: string) {
 }
 
 
+export function align_tfsecs(time_secs: number, tf_secs: number){
+  if(time_secs > 1000000000000){
+    throw Error('10 digit timestamp is require for align_tfsecs')
+  }
+  let origin_off = 0
+  for(const item of tfsecs_origins){
+    if(tf_secs < item.tfsecs)break
+    if(tf_secs % item.tfsecs == 0){
+      origin_off = item.origin
+      break
+    }
+  }
+  if(!origin_off){
+    return Math.floor(time_secs / tf_secs) * tf_secs
+  }
+  return Math.floor((time_secs - origin_off) / tf_secs) * tf_secs + origin_off
+}
+
+export function align_tfmsecs(time_msecs: number, tf_msecs: number){
+  if(time_msecs < 1000000000000){
+    throw Error('13 digit timestamp is require for align_tfmsecs')
+  }
+  if(tf_msecs < 1000){
+    throw Error('milliseconds tf_msecs is require for align_tfmsecs')
+  }
+  const time_secs = Math.floor(time_msecs / 1000)
+  const tf_secs = Math.floor(tf_msecs / 1000)
+  return align_tfsecs(time_secs, tf_secs) * 1000
+}
+
+
 export function build_ohlcvs(details: BarArr[], in_msecs: number, tf_msecs: number, last_bar: BarArr | null = null): BarArr[] {
   if(last_bar){
-    last_bar[0] = Math.floor(last_bar[0] / tf_msecs) * tf_msecs
+    last_bar[0] = align_tfmsecs(last_bar[0], tf_msecs)
   }
   if(in_msecs == tf_msecs){
     if(last_bar && details[0][0] > last_bar[0]){
@@ -213,7 +248,7 @@ export function build_ohlcvs(details: BarArr[], in_msecs: number, tf_msecs: numb
   const result: BarArr[] = last_bar ? [last_bar] : []
   let lastIdx = result.length - 1
   details.forEach((row: BarArr, index: number) => {
-    row[0] = Math.floor(row[0] / tf_msecs) * tf_msecs
+    row[0] = align_tfmsecs(row[0], tf_msecs)
     if(lastIdx < 0 || row[0] > result[lastIdx][0]){
       result.push(row)
       lastIdx += 1
