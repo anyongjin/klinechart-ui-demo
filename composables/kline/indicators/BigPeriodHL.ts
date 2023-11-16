@@ -61,17 +61,17 @@ const bigPeriodHL: IndicatorTemplate = {
     const klocal = useKlineLocal()
     const symbol = klocal.symbol
     const period = makePeriod('1w')
+    const res_period = makePeriod('3w')
     const to = dataList[dataList.length - 1].timestamp
-    const tf_msecs = period.secs * 1000
-    const from = dataList[0].timestamp - tf_msecs * 9
+    const tf_msecs = res_period.secs * 1000
+    const from = dataList[0].timestamp - tf_msecs * 3
     const rsp = await feed.getHistoryKLineData({symbol, period, from, to})
     if (!rsp || !rsp.data || !rsp.data.length) {
       console.error('request kline fail:', symbol.ticker, period.timeframe, from, to, rsp)
       return []
     }
-    const res_period = makePeriod('3w')
     const bar_arr = rsp.data.map(it => [it.timestamp, it.open, it.high, it.low, it.close, it.volume] as BarArr)
-    const big_bars = build_ohlcvs(bar_arr, tf_msecs, res_period.secs * 1000)
+    const big_bars = build_ohlcvs(bar_arr, period.secs * 1000, tf_msecs)
     const bigs = big_bars.map((data: any) => ({
       timestamp: data[0],
       open: data[1],
