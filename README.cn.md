@@ -2,6 +2,10 @@
 这是一个示例项目，使用KlineCharts绘制金融K线图，界面UI从[KLineChart Pro](https://pro.klinecharts.com/getting-started.html)改写(KLineChart Pro使用Solid-js，本项目改写为vue3)  
 本项目使用[Next 3](https://nuxt.com/docs/getting-started/introduction)和[VUE 3](https://vuejs.org/guide/introduction.html)
 
+如需svelte版本请移步[klinecharts-demo-svelte](https://github.com/anyongjin/klinecharts-demo-svelte)
+
+此demo基于9.5.4，如需升级到10.0版本请参考[klinecharts-demo-svelte](https://github.com/anyongjin/klinecharts-demo-svelte)中相关文件改动
+
 # 如何使用
 由于交易界面UI要求的定制性一般比较高，将此项目打包为package不太适合自由修改。  
 所以建议直接clone本项目，提取需要的部分，自由修改页面组件和UI  

@@ -4,6 +4,11 @@
 This is a sample project that uses KlineCharts to draw financial candlestick charts. The UI interface is modified from [KLineChart Pro](https://pro.klinecharts.com/getting-started.html) (KLineChart Pro uses Solid-js, this project is rewritten in Vue3).  
 This project uses [Nuxt 3](https://nuxt.com/docs/getting-started/introduction) and [Vue 3](https://vuejs.org/guide/introduction.html).
 
+If you need the svelte version, please go to [klinecharts-demo-svelte](https://github.com/anyongjin/klinecharts-demo-svelte)
+
+This demo is based on 9.5.4. If you need to upgrade to version 10.0, please refer to the relevant file changes in [klinecharts-demo-svelte](https://github.com/anyongjin/klinecharts-demo-svelte)
+
+
 # How to Use
 Since the customization requirements for the trading UI are usually high, packaging this project as a package may not be suitable for freely modifying. Therefore, it is recommended to directly clone this project, extract the required parts, and freely modify the page components and UI.
 
