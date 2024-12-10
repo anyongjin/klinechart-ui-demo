@@ -24,6 +24,9 @@
 [官方文档](https://v8.i18n.nuxtjs.org/)  
 目前已知无法根据识别的语言自动跳转，等待i18n更新    
 
+**单页面多图表**  
+由于`chart.vue`组件使用了全局store，故不支持单页面多图表，如需支持可使用vue的`provide`,`inject`替换全局store；或考虑使用iframe(未测试)
+
 # Nuxt 3 配置
 ```bash
 # 安装项目

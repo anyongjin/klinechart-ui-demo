@@ -26,6 +26,9 @@ The backend service runs at `http://127.0.0.1:8000`. The interface data specific
 **Multilingual i18n**
 Do not use the official nuxt i18n module, use [this](https://vue-i18n.intlify.dev/guide/integrations/nuxt3.html).
 
+**Multiple charts on a single page**  
+Since the `chart.vue` component uses a global store, it does not support multiple charts on a single page. If you need to support it, you can use vue's `provide`, `inject` to replace the global store; or consider using iframe (untested)
+
 # Nuxt 3 Configuration
 
 ### Install Project
